@@ -1,0 +1,14 @@
+.cus-upload-icon{
+    color: #4256D0;
+    font-size: 50px;
+}
+.custom-upload-file{
+    cursor: pointer;
+    color: #CBD5E0;
+    border : 2px dashed #CBD5E0; 
+    border-radius: 12px;
+}
+.cus-upload-icon-plus{
+        color: #4256D0;
+    font-size: 30px;
+}

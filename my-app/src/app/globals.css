@@ -1,0 +1,121 @@
+.custom-sidebar {
+    background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
+    width: 250px;
+    font-size: 14px;
+}
+
+.custom-sidebar-2 {
+    background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
+    font-size: 14px;
+}
+
+.hover-css-sidebar {
+    background: #4256D0;
+    color: #FFFFFF;
+}
+
+.nav-link.nav-cus:focus {
+    color: #FFFFFF;
+}
+
+.init-nav-co {
+    color: #FFFFFF80;
+    font-weight: 600;
+}
+
+.init-nav-co:hover {
+    color: #FFFFFF80;
+    font-weight: 600;
+}
+
+label.clr-label {
+    color: #747681;
+    font-weight: 600;
+}
+
+.whole-src-clr {
+    background: #F5F5F5;
+    height: 100vh;
+    overflow-y: auto;
+}
+.form-complete-bg{
+    background: #FFFFFF; 
+    border-radius: 8px;
+    overflow-y: auto;
+}
+.form-bg {
+    background: #FFFFFF;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.frm-input-style {
+    color: #747681;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #00000066;
+    background: #FAFAFA;
+}
+
+.frm-input-style:focus {
+    box-shadow: none;
+    color: #747681;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #00000066;
+    background: #FAFAFA;
+}
+
+.btn.btn-blue-clr {
+    background: #4260EA;
+    border: 1px solid #000000;
+    font-weight: 600;
+    border-radius: 4px;
+    color: #FFFFFF;
+    padding: 8px;
+}
+
+.btn.btn-blue-clr:focus {
+    background: #4260EA;
+    border: 1px solid #000000;
+    font-weight: 600;
+    border-radius: 4px;
+    color: #FFFFFF;
+    padding: 8px;
+}
+
+.btn.btn-cancel {
+    border-radius: 4px;
+    background: #FFFFFF;
+    border: 1px solid #111827;
+    font-weight: 600;
+    color: #111827;
+    padding: 8px;
+}
+.over-with-hv{
+    height: 50vh;
+    overflow-y: auto;
+}
+.table-clr-blue{
+background: #4260EA;
+
+
+}
+.frm-table-style{
+    color: #304C57;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #304C5733;
+    background: #FFFFFF;
+}
+.frm-table-style:focus{
+    color: #304C57;
+    padding: 6px;
+    box-shadow: none;
+    border-radius: 8px;
+    border: 1px solid #304C5733;
+    background: #FFFFFF;
+}
+select.form-select {
+  appearance: auto;
+}
