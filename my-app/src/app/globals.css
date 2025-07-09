@@ -27,7 +27,10 @@
     color: #FFFFFF80;
     font-weight: 600;
 }
-
+.bg-right-img{
+    background: #F9F9F9;
+    height: 100vh;
+}
 label.clr-label {
     color: #747681;
     font-weight: 600;
@@ -118,4 +121,100 @@ background: #4260EA;
 }
 select.form-select {
   appearance: auto;
+}
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
+.logo{
+    width: 170.45px;
+    height: 64.26px;
+    position: absolute;
+    top: 60px;   
+    left: 97.55px;   
+}
+
+.title{
+    position: absolute;
+    top: 266.75px;   
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 29.16px;
+    letter-spacing: 0%;
+}
+
+.cardAdmin {
+    position: absolute;
+    top: 393.27px;
+    left: 470px;
+}
+.btn-center-init{
+ position:relative;
+    top: 650px;
+    border-radius: 30px;
+    background-color: 16151580;
+    padding: 15px;
+}
+.btn-select{
+    background-color: #16151580; 
+   color: #00000080;
+}
+.btn-continue{
+      background-color: #4763E4; 
+   color: #FFFFFF;
+}
+.btn-continue:focus{
+    background-color: #4763E4; 
+   color: #FFFFFF;
+}
+.btn-continue:hover{
+      background-color: #4763E4; 
+   color: #FFFFFF;
+}
+.cardManager {
+    position: absolute;
+    top: 393.27px;
+    left: 742px; 
+}
+
+.role {
+    Width: 228.41px;
+    Height: 253.32px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+
+/* @media (max-width: 768px) {
+  .logo {
+    position: static;
+    display: block;
+    margin: 20px auto;
+  }
+
+  .title {
+    position: static;
+    text-align: center;
+    margin: 20px auto;
+    font-size: 24px;
+  }
+
+  .cardAdmin,
+  .cardManager {
+    position: static;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+  }
+
+  .btn {
+    position: static;
+    display: block;
+    margin: 30px auto;
+  }
+}
+ */
+.form-control{
+    box-shadow: none;
 }

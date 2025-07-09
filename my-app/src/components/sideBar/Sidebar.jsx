@@ -46,7 +46,7 @@ const Sidebar = () => {
         {/* Logo */}
         <div className="d-flex flex-column align-items-center justify-content-center text-center p-3">
           <Image
-            src="/assets/pkplogo.png"
+            src="/assets/logo.svg"
             alt="PKP Logo"
             width={100}
             height={80}
