@@ -74,8 +74,6 @@ const Header = () => {
                 height={40}
                 className="rounded-circle me-3"
               />
-
-              <span className="me-2 fw-semibold">User Profile</span>
               <span>Manager</span>
             </div>
           </div>

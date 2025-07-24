@@ -265,3 +265,64 @@ body{
   max-height: 1000px; /* enough to show all items */
   opacity: 1;
 }
+/* Add this to your CSS file or inside a <style jsx> if using module CSS */
+.role-image {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .role-image {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-image {
+    width: 150px;
+    height: 150px;
+  }
+}
+.right-img-login {
+  width: 400px;
+  height: auto;
+}
+
+@media (max-width: 992px) { /* md and below */
+  .right-img-login {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) { /* sm and below */
+  .right-img-login {
+    width: 200px;
+  }
+}
+/* Remove default border and box-shadow for all inputs */
+input,
+textarea,
+select {
+  box-shadow: none !important;
+}
+
+/* Optional: Add custom styling */
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: none !important;
+}
+.btn.common-pink-btn{
+    background:#E7312699;
+    color: #FFFFFF;
+}
+.btn.common-pink-btn:hover{
+    background:#E7312699;
+    color: #FFFFFF;
+}
+.btn.common-pink-btn:focus{
+    background:#E7312699;
+    color: #FFFFFF;
+}

@@ -6,6 +6,7 @@ import Header from "@/components/sideBar/Header";
 import { Poppins } from 'next/font/google';
 import { usePathname } from 'next/navigation';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect } from 'react';
 import "./globals.css";
 
 const poppins = Poppins({
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
 
   const isMinimalRoute = pathname === '/login' || pathname === '/';
-
+useEffect(() => {
+  import('bootstrap/dist/js/bootstrap.bundle.min.js');
+}, []);
   return (
     <html lang="en">
       <body className={`layout-scroll ${poppins.variable}`}>

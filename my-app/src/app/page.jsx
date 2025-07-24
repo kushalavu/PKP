@@ -1,71 +1,76 @@
-'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from 'next/navigation';
 
-const AdminManager = () => {
-  const [selectedRole, setSelectedRole] = useState('');
-  const router = useRouter();
 
-  const adminImage = selectedRole === 'admin' ? '/assets/Admin.svg' : '/assets/reset-admin.png';
-  const managerImage = selectedRole === 'manager' ? '/assets/Manager.svg' : '/assets/manager2.svg';
+const AdminManager = () => {
+ const [selectedRole, setSelectedRole] = useState("");
+  const router = useRouter();
 
   const handleSelect = (role) => {
     setSelectedRole(role);
   };
 
-  const handleContinue = () => {
+  const handleSubmit = () => {
     if (selectedRole) {
-      // Optional: store selected role for later use
-      localStorage.setItem('userRole', selectedRole);
-      router.push('/login');
+       router.push("/login");
     }
   };
 
+  const adminImage = selectedRole === "admin" ? "/assets/Admin.svg" : "/assets/adminsvg.svg";
+  const managerImage = selectedRole === "manager" ? "/assets/Manager.svg" : "/assets/manager2.svg";
+
   return (
-    <div className="container text-center py-5">
-      <div className="logo mb-4">
-        <Image src="/assets/logo.svg" width={170.45} height={64.26} alt="logo" />
+    <div className="text-center w-100 px-3">
+      {/* Logo */}
+      <div className="text-start mb-5 mt-3">
+        <Image src="/assets/logo.svg" className="img-fluid object-fit-conatin" width={150} height={64.26} alt="logo" />
       </div>
 
+      {/* Heading */}
+      <h2 className="fw-bold mb-5 mt-5">What’s your role</h2>
 
-      <div className="row justify-content-center mb-4">
-        <h2 className="title">What's your role?</h2>
+      {/* Role Images */}
+      <div className="d-flex justify-content-center gap-3 mb-5 mt-5 flex-wrap my-auto">
         <div
-
-          className={`cardAdmin col-sm-4 ${selectedRole === 'admin' ? 'border-primary' : ''}`}
-          onClick={() => handleSelect('admin')}
-          style={{ cursor: 'pointer' }}
+          onClick={() => handleSelect("admin")}
+          style={{ cursor: "pointer" }}
+          className="mt-lg-5"
         >
-          <Image src={adminImage} width={228.41} height={253.32} alt="admin" />
+          <Image src={adminImage} className="img-fluid role-image" width={300} height={300} alt="Admin" />
         </div>
 
         <div
-          className={`cardManager col-sm-4 ${selectedRole === 'manager' ? 'border-primary' : ''}`}
-          onClick={() => handleSelect('manager')}
-          style={{ cursor: 'pointer' }}
+          onClick={() => handleSelect("manager")}
+          style={{ cursor: "pointer" }}
+          className="mt-lg-5"
         >
-          <Image src={managerImage} width={228.41} height={253.32} alt="manager" />
+          <Image src={managerImage} className="img-fluid role-image" width={300} height={300} alt="Manager" />
         </div>
-
-        <div className='col-sm-4'>
-          <button
-            type="button"
-            className={`btn btn-center-init mt-4 px-5 ${selectedRole ? 'btn-continue' : 'btn-select'
-              }`}
-            disabled={!selectedRole}
-            onClick={handleContinue}
-          >
-            {selectedRole ? 'Continue to Login' : 'Select a user'}
-          </button>
-
-        </div>
-
       </div>
 
+      {/* Button */}
+      <button
+        onClick={handleSubmit}
+        disabled={!selectedRole}
+        className={`btn px-5 py-lg-3 py-2 mt-5 rounded-pill fw-semibold transition-all ${
+          selectedRole
+            ? "btn-primary"
+            : "btn-secondary bg-secondary border-0 text-light"
+        }`}
+        style={{
+          filter: selectedRole ? "none" : "blur(1px)",
+          opacity: selectedRole ? 1 : 0.6,
+          pointerEvents: selectedRole ? "auto" : "none",
+        }}
+      >
+        Select to User
+      </button>
     </div>
   );
-};
+}
 
 export default AdminManager;
