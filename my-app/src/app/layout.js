@@ -1,7 +1,7 @@
-// app/layout.js
+
 'use client';
 
-import Sidebar from "@/components/sideBar/SideBar";
+import Sidebar from "@/components/sideBar/Sidebar";
 import Header from "@/components/sideBar/Header";
 import { Poppins } from 'next/font/google';
 import { usePathname } from 'next/navigation';
