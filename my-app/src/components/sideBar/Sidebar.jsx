@@ -44,7 +44,7 @@ const Sidebar = () => {
     <>
       <aside className="min-vh-100 d-flex flex-column">
         {/* Logo */}
-        <div className="d-flex flex-column align-items-center justify-content-center text-center p-3">
+        <div className="d-flex flex-column align-items-center justify-content-center text-center p-3 d-lg-block d-none">
           <Image
             src="/assets/logo.svg"
             alt="PKP Logo"
@@ -54,7 +54,7 @@ const Sidebar = () => {
           />
         </div>
 
-        <div className="custom-sidebar min-vh-100 d-flex flex-column mt-1">
+        <div className="custom-sidebar min-vh-100 d-flex flex-column mt-1 d-lg-block d-none">
           <ul className="nav nav-pills flex-column init-nav-co mt-2">
             {menuItems.map((item, index) => (
               <li key={index} className="nav-item p-2">

@@ -29,9 +29,9 @@ const WorkInProgressTable = () => {
           <button className="btn btn-outline-secondary w-100">Clear All <IoMdCloseCircleOutline /></button>
         </div>
       </div>
-
+  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
       <div className="table-responsive over-with-hv">
-        <table className="table table-bordered text-center">
+        <table className="table table-bordered table-striped">
           <thead className="table-primary">
             <tr>
               <th>Date</th>
@@ -48,12 +48,22 @@ const WorkInProgressTable = () => {
               <th>Total Sorted</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td colSpan="12">No data available</td>
-            </tr>
-          </tbody>
+             <tbody>
+        {/* Your many rows here */}
+        <tr>
+          <td>Row 1</td>
+          <td>Data</td>
+          <td>More</td>
+        </tr>
+        <tr>
+          <td>Row 2</td>
+          <td>Data</td>
+          <td>More</td>
+        </tr>
+        {/* Add many more rows */}
+      </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

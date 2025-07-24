@@ -1,8 +1,7 @@
 .custom-sidebar {
     background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
     width: 250px;
-    font-size: 14px;
-}
+    font-size: 14px;}
 
 .custom-sidebar-2 {
     background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
@@ -28,8 +27,7 @@
     font-weight: 600;
 }
 .bg-right-img{
-    background: #F9F9F9;
-    height: 100vh;
+    height: auto;
 }
 label.clr-label {
     color: #747681;
@@ -38,8 +36,7 @@ label.clr-label {
 
 .whole-src-clr {
     background: #F5F5F5;
-    height: 100vh;
-    overflow-y: auto;
+    height: auto;
 }
 .form-complete-bg{
     background: #FFFFFF; 
@@ -48,8 +45,7 @@ label.clr-label {
 }
 .form-bg {
     background: #FFFFFF;
-    height: 100vh;
-    overflow-y: auto;
+    height: auto;
 }
 
 .frm-input-style {
@@ -86,7 +82,9 @@ label.clr-label {
     color: #FFFFFF;
     padding: 8px;
 }
-
+.layout-scroll{
+    height: auto;
+}
 .btn.btn-cancel {
     border-radius: 4px;
     background: #FFFFFF;
@@ -95,9 +93,35 @@ label.clr-label {
     color: #111827;
     padding: 8px;
 }
-.over-with-hv{
-    height: 50vh;
+.over-with-hv {
+    height: auto;
+    overflow-y: visible;
+}
+
+@media (min-width: 992px) {
+    .over-with-hv {
+        height: 50vh;
+        overflow-y: auto;
+    }
+    .whole-src-clr {
+    background: #F5F5F5;
+    height: 100vh;
     overflow-y: auto;
+}
+.bg-right-img{
+    background: #F9F9F9;
+    height: 100vh;
+}
+.form-bg {
+    background: #FFFFFF;
+    height: 100vh;
+    overflow-y: auto;
+}
+.layout-scroll{
+    height: 100vh;
+    overflow: hidden;
+}
+
 }
 .table-clr-blue{
 background: #4260EA;
@@ -217,4 +241,27 @@ body{
  */
 .form-control{
     box-shadow: none;
+}
+.humburger-small{
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    margin-top: 67px;
+    background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
+    font-size: 14px;
+    border-radius: 5px;
+}
+.btn-stop-focus:focus{
+    border: none;
+}
+.humburger-menu-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+.humburger-menu-wrapper.open {
+  max-height: 1000px; /* enough to show all items */
+  opacity: 1;
 }

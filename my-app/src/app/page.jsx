@@ -50,16 +50,15 @@ const AdminManager = () => {
         </div>
 
         <div className='col-sm-4'>
-<button
-  type="button"
-  className={`btn btn-center-init mt-4 px-5 ${
-    selectedRole ? 'btn-continue' : 'btn-select'
-  }`}
-  disabled={!selectedRole}
-  onClick={handleContinue}
->
-  {selectedRole ? 'Continue to Login' : 'Select a user'}
-</button>
+          <button
+            type="button"
+            className={`btn btn-center-init mt-4 px-5 ${selectedRole ? 'btn-continue' : 'btn-select'
+              }`}
+            disabled={!selectedRole}
+            onClick={handleContinue}
+          >
+            {selectedRole ? 'Continue to Login' : 'Select a user'}
+          </button>
 
         </div>
 

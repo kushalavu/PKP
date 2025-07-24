@@ -22,15 +22,15 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={poppins.variable} style={{ height: '100vh', overflow: 'hidden' }}>
+      <body className={`layout-scroll ${poppins.variable}`}>
         {isMinimalRoute ? (
-          <main className="p-4">{children}</main>
+          <main className="p-lg-3 px-1 py-lg-4 py-3">{children}</main>
         ) : (
           <div className="d-flex">
             <Sidebar />
             <div className="flex-grow-1">
               <Header />
-              <main className="p-4 whole-src-clr">{children}</main>
+              <main className="p-lg-3 px-1 py-lg-4 py-3 whole-src-clr">{children}</main>
             </div>
           </div>
         )}
