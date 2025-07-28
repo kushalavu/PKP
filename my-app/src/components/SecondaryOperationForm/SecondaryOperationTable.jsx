@@ -37,8 +37,8 @@ const SecondaryOperationTable = () => {
       </div>
 
       {/* Table */}
-      <div className="table-responsive over-with-hv">
-        <table className="table table-bordered text-center">
+      <div className="table-scroll-wrapper">
+        <table className="table table-bordered">
           <thead className="table-primary">
             <tr>
               <th>Date</th>
@@ -47,12 +47,23 @@ const SecondaryOperationTable = () => {
               <th>Core Visual Done</th>
               <th>Magnetic Core Drill</th>
               <th>Magnetic Core Visual Done</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td colSpan="6">No data available</td>
-            </tr>
+                  <tbody className='mt-3'>
+            {Array.from({ length: 30 }).map((_, i) => (
+              <tr key={i}>
+                <td>2025-07-26</td>
+                <td>Item {i + 1}</td>
+                <td>OSM123{i}</td>
+                <td>12</td>
+                <td>3</td>
+                <td>15</td>
+                <td>Edit</td>
+                <td>Delete</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

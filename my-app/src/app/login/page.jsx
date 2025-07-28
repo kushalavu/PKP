@@ -65,14 +65,14 @@ router.push('/login');
                                     <div className="mb-4">
                                         <input
                                             type="text"
-                                            className="form-control bg-light border-0 rounded py-3 px-3"
+                                            className="form-control bg-light border-0 rounded py-lg-3 py-2 px-3"
                                             placeholder="User ID"
                                         />
                                     </div>
                                     <div className="mb-4 position-relative">
                                         <input
                                             type={showPassword ? 'text' : 'password'}
-                                            className="form-control bg-light border-0 rounded py-3 px-3 pe-5"
+                                            className="form-control bg-light border-0 rounded py-lg-3 py-2 px-3 pe-5"
                                             placeholder="Password"
                                         />
                                         <button
@@ -110,7 +110,7 @@ router.push('/login');
                                     </Link> */}
                                               <button
                                             type="button"
-                                            className="btn common-pink-btn text-center text-decoration-none w-100 p-3"
+                                            className="btn common-pink-btn text-center text-decoration-none w-100 py-lg-3 py-2 px-3"
                                          onClick={signIn}
                                 
                                         >

@@ -23,7 +23,7 @@ const Sidebar = () => {
   const handleLogout = () => {
     localStorage.clear();
     setShowModal(false);
-    router.push('/login');
+    router.push('/');
   };
 
   const menuItems = [
@@ -85,36 +85,39 @@ const Sidebar = () => {
 
       {/* Logout Confirmation Modal */}
       {showModal && (
-        <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          role="dialog"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Confirm Logout</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to log out?</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                  No
-                </button>
-                <button className="btn btn-danger" onClick={handleLogout}>
-                  Yes, Logout
-                </button>
+        <>
+          <div className="modal-backdrop fade show"></div>
+          <div
+            className="modal fade show d-block"
+            tabIndex="-1"
+            role="dialog"
+            style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+          >
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirm Logout</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <p>Are you sure you want to log out?</p>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                    No
+                  </button>
+                  <button className="btn btn-danger" onClick={handleLogout}>
+                    Yes, Logout
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

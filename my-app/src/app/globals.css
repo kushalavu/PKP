@@ -242,17 +242,47 @@ body{
 .form-control{
     box-shadow: none;
 }
-.humburger-small{
-    z-index: 9999;
-    position: fixed;
-    top: 0;
-    margin-top: 67px;
-    background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
-    font-size: 14px;
-    border-radius: 5px;
+/* styles/globals.css or your component CSS */
+
+/* Prevent scrolling when menu is open */
+.no-scroll {
+  overflow: hidden;
 }
-.btn-stop-focus:focus{
+
+/* Backdrop overlay for mobile menu */
+.mobile-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+}
+
+/* Your mobile menu stays above backdrop */
+.humburger-small {
+  z-index: 9999;
+  position: fixed;
+  top: 67px;
+  left: 0;
+  width: 80vw;
+  max-width: 300px;
+  height: 100vh;
+  background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
+  border-radius: 0 5px 5px 0;
+  overflow-y: auto;
+}
+ 
+
+button.btn.btn-stop-focus{
     border: none;
+    text-decoration: none;
+}
+button.btn.btn-stop-focus:focus,
+button.btn.btn-stop-focus:hover{
+    border: none;
+    text-decoration: none;
 }
 .humburger-menu-wrapper {
   max-height: 0;
@@ -272,35 +302,7 @@ body{
   object-fit: contain;
 }
 
-@media (max-width: 768px) {
-  .role-image {
-    width: 200px;
-    height: 200px;
-  }
-}
 
-@media (max-width: 480px) {
-  .role-image {
-    width: 150px;
-    height: 150px;
-  }
-}
-.right-img-login {
-  width: 400px;
-  height: auto;
-}
-
-@media (max-width: 992px) { /* md and below */
-  .right-img-login {
-    width: 300px;
-  }
-}
-
-@media (max-width: 768px) { /* sm and below */
-  .right-img-login {
-    width: 200px;
-  }
-}
 /* Remove default border and box-shadow for all inputs */
 input,
 textarea,
@@ -325,4 +327,98 @@ select:focus {
 .btn.common-pink-btn:focus{
     background:#E7312699;
     color: #FFFFFF;
+}
+.mobile-header {
+  z-index: 9999;
+}
+  .table-scroll-wrapper thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e9ecef; /* Bootstrap's table-primary light */
+    z-index: 10;
+  }
+  .table-scroll-wrapper {
+     max-height: 300px;
+     overflow-y: auto;
+  }
+@media (max-width: 991.98px) {
+  .responsive-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .responsive-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #e9ecef;
+  }
+
+  .responsive-table-body-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    display: block;
+  }
+
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .responsive-table tbody {
+    display: block;
+  }
+}
+
+
+
+
+@media (max-width: 768px) {
+  .role-image {
+    width: 200px;
+    height: 200px;
+  }
+    .table-scroll-wrapper {
+    max-height: 300px; 
+    max-width: 580px; 
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .role-image {
+    width: 150px;
+    height: 150px;
+  }
+      .table-scroll-wrapper {
+    max-height: 300px; 
+    max-width: 450px;  
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+}
+.right-img-login {
+  width: 400px;
+  height: auto;
+}
+
+@media (max-width: 992px) { /* md and below */
+  .right-img-login {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) { /* sm and below */
+  .right-img-login {
+    width: 200px;
+  }
 }

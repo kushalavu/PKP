@@ -7,10 +7,10 @@ const NewRequirementPage = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-lg-4 mb-4">
+        <div className="col-xxl-4 col-lg-6 col-12 mb-4">
           <NewRequirementForm />
         </div>
-        <div className="col-lg-8">
+        <div className="col-xxl-8 col-lg-6 col-12">
           <FileUploadBlock />
         </div>
       </div>

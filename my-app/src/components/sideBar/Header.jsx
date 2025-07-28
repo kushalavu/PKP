@@ -1,7 +1,6 @@
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -15,6 +14,7 @@ import { BsGearWideConnected } from "react-icons/bs";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { VscError } from "react-icons/vsc";
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
   const pathname = usePathname();
@@ -39,12 +39,9 @@ const Header = () => {
     { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
     { label: 'Notes', icon: <FaRegStickyNote />, href: '/notes' },
     { label: 'Machine Stoppage Details', icon: <VscError />, href: '/stoppage' },
+    { label: 'Profile', icon: <CgProfile />, href: '/profile' },
     { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
   ];
-
-  const handleMenuClick = () => {
-    setShowMenu(prev => !prev);
-  };
 
   const handleItemClick = (item) => {
     if (item.action) {
@@ -53,88 +50,103 @@ const Header = () => {
     setShowMenu(false);
   };
 
+  useEffect(() => {
+    if (showMenu) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+  }, [showMenu]);
+
   return (
     <>
+      {/* Desktop Header */}
       <nav className="custom-sidebar-2 text-white border-bottom p-3 d-lg-block d-none">
-        <div className="container-fluid ">
+        <div className="container-fluid">
           <div className="row">
-            <div className="col-sm-3">
-              <h5 className="navbar-brand text-white mt-3 justify-content-between">Loki - Let’s check your inventory today</h5>
+            <div className="col-xxl-3 col-lg-5 col-6">
+              <h5 className="navbar-brand text-white mt-3">Loki - Let’s check your inventory today</h5>
             </div>
-            <div className="col-sm-7 d-lg-block d-none">
+            <div className="col-xxl-7 col-lg-5 col-4">
               <input className="form-control me-5" type="search" placeholder="Search..." />
-
             </div>
-            
-            <div className="col-lg-2 col-9 mx-lg-0 mx-auto justify-content-between">
-              <Image
-                src="/assets/user.png"
-                alt="User Profile"
-                width={40}
-                height={40}
-                className="rounded-circle me-3"
-              />
-              <span>Manager</span>
+            <div className="col-xxl-2 col-lg-2 d-flex align-items-center justify-content-end">
+           <Link href="/profile" className='text-decoration-none text-white'>
+  <Image
+    src="/assets/user.png"
+    alt="User Profile"
+    width={40}
+    height={40}
+    className="rounded-circle me-3"
+    style={{ cursor: 'pointer' }}
+  />
+              <span>Manager</span></Link>
             </div>
           </div>
-
         </div>
       </nav>
 
- <div className="container-fluid custom-sidebar-2 sticky-top border-bottom d-lg-none d-block">
-      <div className="row">
-              <div className="col-3">
-               <button className="btn btn-stop-focus text-white me-3 p-3" onClick={handleMenuClick}>
-                  {showMenu ? <FaTimes size={22} /> : <FaBars size={22} />}
-                </button>
-            </div>
-            <div className="col-9">
-                <div className="align-items-end justify-content-end text-end p-3">
-                <Image
-                  src="/assets/logo.svg"
-                  alt="PKP Logo"
-                  width={100}
-                  height={80}
-                  className="img-fluid object-fit-contain"
-                />
-              </div>
-            </div>
-    </div>
- </div>
-      {/* Slide down menu */}
-
-      {showMenu && (
-        <div className="humburger-small border-bottom shadow-sm p-3 d-lg-none d-block ">
-          <ul className="list-unstyled nav-pills init-nav-co mb-0">
-            {menuItems.map((item, index) => (
-              <li key={index} className="mb-2">
-                {item.action ? (
-                  <button
-                    className="btn btn-danger nav-cus w-100 text-start d-flex align-items-center gap-2"
-                    onClick={() => handleItemClick(item)}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </button>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className={`btn w-auto nav-cus text-start d-flex align-items-center gap-2 ${pathname === item.href ? 'hover-css-sidebar fw-semibold' : 'init-nav-co'
-                      }`}
-                    onClick={() => setShowMenu(false)}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
+      {/* Mobile Header */}
+      <div className="container-fluid mobile-header custom-sidebar-2 sticky-top border-bottom d-lg-none d-block">
+        <div className="row">
+          <div className="col-3">
+            <button type='button' className="btn btn-stop-focus boarder-dec text-white me-3 p-3" onClick={() => setShowMenu(!showMenu)}>
+              {showMenu ? <FaTimes size={22} /> : <FaBars size={22} />}
+            </button>
+          </div>
+          <div className="col-9 text-end p-3">
+            <Image
+              src="/assets/logo.svg"
+              alt="PKP Logo"
+              width={100}
+              height={80}
+              className="img-fluid object-fit-contain"
+            />
+          </div>
         </div>
-      )}
-      {/* Logout Confirmation Modal */}
+      </div>
+
+      {/* Backdrop */}
+      {/* Slide-down Mobile Menu */}
+ {showMenu && (
+  <>
+    <div className="mobile-menu-backdrop" onClick={() => setShowMenu(false)} />
+    <div className="humburger-small border-bottom shadow-sm p-3 d-lg-none d-block">
+      <ul className="list-unstyled nav-pills init-nav-co mb-0">
+        {menuItems.map((item, index) => (
+          <li key={index} className="mb-2">
+            {item.action ? (
+              <button
+                className="btn btn-danger nav-cus w-100 text-start d-flex align-items-center gap-2"
+                onClick={() => handleItemClick(item)}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className={`btn w-100 nav-cus text-start d-flex align-items-center gap-2 ${pathname === item.href
+                  ? 'hover-css-sidebar fw-semibold'
+                  : 'init-nav-co'
+                  }`}
+                onClick={() => setShowMenu(false)}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </>
+)}
+
+
+      {/* Logout Modal */}
       {showModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -145,12 +157,8 @@ const Header = () => {
                 <p>Are you sure you want to log out?</p>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                  No
-                </button>
-                <button className="btn btn-danger" onClick={handleLogout}>
-                  Yes, Logout
-                </button>
+                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>No</button>
+                <button className="btn btn-danger" onClick={handleLogout}>Yes, Logout</button>
               </div>
             </div>
           </div>
@@ -161,4 +169,3 @@ const Header = () => {
 };
 
 export default Header;
-

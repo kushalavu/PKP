@@ -18,7 +18,7 @@ const FileUploadBlock = () => {
 
       <div className="col-sm-12 mb-3 mt-4">
         <div className='row'>
-        <div className="col-xl-9 col-md-7 col-6">
+        <div className="col-xxl-9 col-xl-6 col-lg-4 col-md-7 col-5">
  <small className="text-muted init-nav-co">Need help importing files?</small>
         </div>
        
