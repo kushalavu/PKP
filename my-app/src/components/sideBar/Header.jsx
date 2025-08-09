@@ -34,7 +34,7 @@ const [role, setRole] = useState(null);
   const handleLogout = () => {
     localStorage.clear();
     setShowModal(false);
-    router.push('/login');
+    router.push('/');
   };
 
     const menuItemsAdmin = [
