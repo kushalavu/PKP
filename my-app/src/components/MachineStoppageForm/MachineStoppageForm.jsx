@@ -41,37 +41,37 @@ const MachineStoppageForm = () => {
             </div>
             <div className="col-md-4">
               <label className="form-label clr-label">Part</label>
-              <input type="text" name="part" className="form-control frm-input-style" value={formData.part} onChange={handleChange} />
+              <input type="text" name="part" className="form-control frm-input-style" placeholder='Select part name' value={formData.part} onChange={handleChange} />
             </div>
             <div className="col-md-4">
               <label className="form-label clr-label">No of M/C Allotted</label>
-              <input type="text" name="machinesAllotted" className="form-control frm-input-style" value={formData.machinesAllotted} onChange={handleChange} />
+              <input type="text" name="machinesAllotted" className="form-control frm-input-style"placeholder='No of M/C allotted' value={formData.machinesAllotted} onChange={handleChange} />
             </div>
           </div>
 
           <div className="row mb-3">
             <div className="col-md-4">
               <label className="form-label clr-label">Running Machines</label>
-              <input type="text" name="running" className="form-control frm-input-style" value={formData.running} onChange={handleChange} />
+              <input type="text" name="running" className="form-control frm-input-style"placeholder='Running machine' value={formData.running} onChange={handleChange} />
             </div>
             <div className="col-md-4">
               <label className="form-label clr-label">Machines Not Running</label>
-              <input type="text" name="notRunning" className="form-control frm-input-style" value={formData.notRunning} onChange={handleChange} />
+              <input type="text" name="notRunning" className="form-control frm-input-style"placeholder='Machine not working' value={formData.notRunning} onChange={handleChange} />
             </div>
             <div className="col-md-4">
               <label className="form-label clr-label">Under Setting</label>
-              <input type="text" name="underSetting" className="form-control frm-input-style" value={formData.underSetting} onChange={handleChange} />
+              <input type="text" name="underSetting" className="form-control frm-input-style"placeholder='Under setting' value={formData.underSetting} onChange={handleChange} />
             </div>
           </div>
 
           <div className="row mb-3">
             <div className="col-md-4">
               <label className="form-label clr-label">Maintenance</label>
-              <input type="text" name="maintenance" className="form-control frm-input-style" value={formData.maintenance} onChange={handleChange} />
+              <input type="text" name="maintenance" className="form-control frm-input-style"placeholder='Maintenance' value={formData.maintenance} onChange={handleChange} />
             </div>
             <div className="col-md-8">
               <label className="form-label clr-label">Remarks</label>
-              <input type="text" name="remarks" className="form-control frm-input-style" value={formData.remarks} onChange={handleChange} />
+              <input type="text" name="remarks" className="form-control frm-input-style"placeholder='Remarks' value={formData.remarks} onChange={handleChange} />
             </div>
           </div>
 
@@ -79,7 +79,7 @@ const MachineStoppageForm = () => {
             <div className="col-md-4">
               <label className="form-label clr-label">Add New Process</label>
               <div className="input-group">
-                <input type="text" name="newProcess" className="form-control frm-input-style" value={formData.newProcess} onChange={handleChange} placeholder="Add New Process" />
+                <input type="text" name="newProcess" className="form-control frm-input-style" placeholder='Add new process' value={formData.newProcess} onChange={handleChange}/>
                 <span className="input-group-text"><FiPlusCircle /></span>
               </div>
             </div>

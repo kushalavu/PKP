@@ -20,10 +20,12 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function PieCharts() {
   return (
-    <div className="d-flex flex-column gap-3">
-      <div className="card shadow-sm border-0 p-3">
+<>
+<div className="row">
+    <div className="col-sm-6">
+   <div className="card shadow-sm border-0 p-3">
         <h6 className="fw-bold mb-3">Type of Components</h6>
-        <PieChart width={250} height={200}>
+        <PieChart width={300} height={300}>
           <Pie data={componentData} dataKey="value" cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
             {componentData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -32,10 +34,11 @@ export default function PieCharts() {
           <Tooltip />
         </PieChart>
       </div>
-
+    </div>
+    <div className="col-sm-6">
       <div className="card shadow-sm border-0 p-3">
         <h6 className="fw-bold mb-3">Lost Units</h6>
-        <PieChart width={250} height={200}>
+        <PieChart width={300} height={300}>
           <Pie data={lostUnitData} dataKey="value" cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
             {lostUnitData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -45,5 +48,9 @@ export default function PieCharts() {
         </PieChart>
       </div>
     </div>
+</div>
+   
+
+</>
   );
 }

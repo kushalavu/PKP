@@ -12,7 +12,7 @@ const NewRequirementForm = () => {
         <div className="mb-3">
           <label className="form-label clr-label">Part Name</label>
           <select className="form-select frm-input-style">
-            <option>Select a category</option>
+            <option>Select Part Name</option>
             <option>Component A</option>
             <option>Component B</option>
           </select>
@@ -25,22 +25,22 @@ const NewRequirementForm = () => {
 
         <div className="mb-3">
           <label className="form-label clr-label">Raw Material</label>
-          <input type="text" className="form-control frm-input-style" />
+          <input type="text" className="form-control frm-input-style" placeholder='Please enter raw material' />
         </div>
 
         <div className="mb-3">
           <label className="form-label clr-label">Raw Material Size</label>
-          <input type="text" className="form-control frm-input-style" />
+          <input type="text" className="form-control frm-input-style"placeholder='please enter raw material size' />
         </div>
 
         <div className="mb-3">
           <label className="form-label clr-label">Raw Material Company</label>
-          <input type="text" className="form-control frm-input-style" />
+          <input type="text" className="form-control frm-input-style" placeholder='please enter raw material company'/>
         </div>
 
         <div className="mb-3">
           <label className="form-label clr-label">Raw Material Drawing</label>
-          <input type="text" className="form-control frm-input-style" />
+          <input type="text" className="form-control frm-input-style"placeholder='please enter raw material drawing' />
         </div>
         <div className="row">
           <div className="col-sm-5 mt-3">

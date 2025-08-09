@@ -22,7 +22,7 @@ export default function BarChartSection() {
   return (
     <div className="card shadow-sm border-0 p-3">
       <h6 className="fw-bold mb-3">Total Approved Units</h6>
-      <BarChart width={600} height={300} data={data}>
+      <BarChart height={300} width={600} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="month" />
         <YAxis />

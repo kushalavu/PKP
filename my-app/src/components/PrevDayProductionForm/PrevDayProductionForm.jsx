@@ -52,52 +52,52 @@ const PrevDayProductionForm = () => {
 
         <div className="col-md-4">
           <label className="form-label clr-label">Machine Number</label>
-          <input type="text" name="machineNumber" value={formData.machineNumber} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="machineNumber" value={formData.machineNumber} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter machine number' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Capacity</label>
-          <input type="text" name="capacity" value={formData.capacity} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="capacity" value={formData.capacity} onChange={handleChange} className="form-control frm-input-style" placeholder='Please enter the capacity of machine'/>
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">1st Shift</label>
-          <input type="text" name="shift1" value={formData.shift1} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="shift1" value={formData.shift1} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter 1st shift' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">2nd Shift</label>
-          <input type="text" name="shift2" value={formData.shift2} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="shift2" value={formData.shift2} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter 2nd shift' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Total in Numbers</label>
-          <input type="text" name="totalNumbers" value={formData.totalNumbers} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="totalNumbers" value={formData.totalNumbers} onChange={handleChange} className="form-control frm-input-style"placeholder='Total in number' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">% of Production Achieved</label>
-          <input type="text" name="productionAchieved" value={formData.productionAchieved} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="productionAchieved" value={formData.productionAchieved} onChange={handleChange} className="form-control frm-input-style"placeholder='production achieved' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Production(Target)</label>
-          <input type="text" name="productionTarget" value={formData.productionTarget} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="productionTarget" value={formData.productionTarget} onChange={handleChange} className="form-control frm-input-style" placeholder='production'/>
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Inspected Quantity</label>
-          <input type="text" name="inspectedQuantity" value={formData.inspectedQuantity} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="inspectedQuantity" value={formData.inspectedQuantity} onChange={handleChange} className="form-control frm-input-style"placeholder='inspected Quantity' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Sorted(OK)</label>
-          <input type="text" name="sortedOK" value={formData.sortedOK} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="sortedOK" value={formData.sortedOK} onChange={handleChange} className="form-control frm-input-style" placeholder='sorted'/>
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Sorted(Rejected)</label>
-          <input type="text" name="sortedRejected" value={formData.sortedRejected} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="sortedRejected" value={formData.sortedRejected} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter rejected count' />
         </div>
 
         <div className="col-md-4">
@@ -107,7 +107,7 @@ const PrevDayProductionForm = () => {
 
         <div className="col-md-4">
           <label className="form-label clr-label">Sorting out(Quantity)</label>
-          <input type="text" name="sortingOut" value={formData.sortingOut} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="text" name="sortingOut" value={formData.sortingOut} onChange={handleChange} className="form-control frm-input-style"placeholder='Quantity' />
         </div>
 
         <div className="col-12">

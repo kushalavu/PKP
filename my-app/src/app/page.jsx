@@ -1,13 +1,13 @@
-
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
 
 
 const AdminManager = () => {
- const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
   const router = useRouter();
 
   const handleSelect = (role) => {
@@ -16,18 +16,31 @@ const AdminManager = () => {
 
   const handleSubmit = () => {
     if (selectedRole) {
-       router.push("/login");
+        Cookies.set('userRole', selectedRole);
+      // Optional: store selected role if needed
+      localStorage.setItem("userRole", selectedRole);
+      router.push("/login");
     }
   };
 
-  const adminImage = selectedRole === "admin" ? "/assets/Admin.svg" : "/assets/adminsvg.svg";
-  const managerImage = selectedRole === "manager" ? "/assets/Manager.svg" : "/assets/manager2.svg";
+  const adminImage =
+    selectedRole === "admin" ? "/assets/Admin.svg" : "/assets/adminsvg.svg";
+  const managerImage =
+    selectedRole === "manager"
+      ? "/assets/Manager.svg"
+      : "/assets/manager2.svg";
 
   return (
     <div className="text-center w-100 px-3">
       {/* Logo */}
-      <div className="text-start mb-5 mt-3">
-        <Image src="/assets/logo.svg" className="img-fluid object-fit-conatin" width={150} height={64.26} alt="logo" />
+      <div className="text-start mb-5 mt-5">
+        <Image
+          src="/assets/logo.svg"
+          className="img-fluid object-fit-contain"
+          width={150}
+          height={64.26}
+          alt="logo"
+        />
       </div>
 
       {/* Heading */}
@@ -40,7 +53,13 @@ const AdminManager = () => {
           style={{ cursor: "pointer" }}
           className="mt-lg-5"
         >
-          <Image src={adminImage} className="img-fluid role-image" width={300} height={300} alt="Admin" />
+          <Image
+            src={adminImage}
+            className="img-fluid role-image"
+            width={300}
+            height={300}
+            alt="Admin"
+          />
         </div>
 
         <div
@@ -48,7 +67,13 @@ const AdminManager = () => {
           style={{ cursor: "pointer" }}
           className="mt-lg-5"
         >
-          <Image src={managerImage} className="img-fluid role-image" width={300} height={300} alt="Manager" />
+          <Image
+            src={managerImage}
+            className="img-fluid role-image"
+            width={300}
+            height={300}
+            alt="Manager"
+          />
         </div>
       </div>
 
@@ -67,10 +92,10 @@ const AdminManager = () => {
           pointerEvents: selectedRole ? "auto" : "none",
         }}
       >
-        Select to User
+        {selectedRole ? "Continue to Login" : "Select Role"}
       </button>
     </div>
   );
-}
+};
 
 export default AdminManager;

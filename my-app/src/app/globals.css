@@ -38,6 +38,10 @@ label.clr-label {
     background: #F5F5F5;
     height: auto;
 }
+.whole-src-clr-1 {
+    background: #FFFFFF !important;
+    height: auto;
+}
 .form-complete-bg{
     background: #FFFFFF; 
     border-radius: 8px;
@@ -421,4 +425,62 @@ select:focus {
   .right-img-login {
     width: 200px;
   }
+}
+.customTable thead th {
+  background-color: #4260EA66; /* soft purple */
+  color: #000000;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #00000033;
+}
+
+.customTable {
+  border: 1px solid #00000033;
+  border-radius: 10px;
+}
+
+
+.customTable tbody tr:hover {
+  background-color: #f3e8ff; /* light purple hover */
+}
+.hr-sty-all{
+  border-top: 2px solid #00000033;
+}
+.pagination{
+
+    --bs-pagination-color: #00000033 !important;
+    --bs-pagination-bg: none !important;
+    --bs-pagination-border-width: none;
+  
+    --bs-pagination-focus-box-shadow: none !important;
+   --bs-pagination-active-color: #120213 !important;
+    --bs-pagination-active-bg: none !important;
+    --bs-pagination-active-border-color: none !important;
+    --bs-pagination-disabled-color: none !important;
+    --bs-pagination-disabled-bg: none !important;
+    --bs-pagination-border-color: none !important;
+    --bs-pagination-border-radius:none !important;
+    --bs-pagination-hover-color: none !important;
+    --bs-pagination-hover-bg: none !important;
+    --bs-pagination-hover-border-color: none !important;
+    --bs-pagination-focus-color: none !important;
+   --bs-pagination-focus-bg: none !important;
+
+}
+.btn-outline-secondary {
+    --bs-btn-color: #304C57 !important;
+    --bs-btn-border-color: #304C5733 !important;
+    --bs-btn-hover-color: #304C57 !important;
+    --bs-btn-focus-color: #304C57 !important;
+    --bs-btn-hover-bg: none !important;
+    --bs-btn-hover-border-color: #304C5733 !important;
+    --bs-btn-focus-shadow-rgb:#304C5733 !important;
+    --bs-btn-active-color:none !important;
+    --bs-btn-active-bg: none !important;
+    --bs-btn-active-border-color: #6c757d !important;
+    --bs-btn-active-shadow: #0000 !important;
+    --bs-btn-disabled-color: none !important;
+    --bs-btn-disabled-bg: none;
+    --bs-btn-disabled-border-color: none !important;
+    --bs-gradient: none;
 }

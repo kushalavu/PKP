@@ -1,21 +1,34 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import RightImage from '../../../public/assets/rightimage.png';
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { MdRadioButtonUnchecked, MdCheckCircle } from "react-icons/md";
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 // import ForgotPassword from '@/componants/LoginPage/ForgotPassword' const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [remember, setRemember] = useState(false);
+    const [role, setRole] = useState('');
            const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       const router = useRouter();
+      useEffect(() => {
+  const cookieRole = Cookies.get('userRole');
+  if (cookieRole) {
+    setRole(cookieRole);
+  }
+}, []);
+
 const signIn = () =>{
-router.push('/new-requirement');
+    if(role === 'admin'){
+        router.push('/new-requirement-admin');
+    }else{
+    router.push('/new-requirement');
+    }
 }
 const forgotPassword = () =>{
 router.push('/login');

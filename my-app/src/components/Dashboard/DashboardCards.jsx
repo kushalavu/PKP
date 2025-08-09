@@ -14,7 +14,7 @@ export default function DashboardCards() {
   return (
     <div className="row g-3">
       {cardData.map((item, idx) => (
-        <div key={idx} className="col-md-4">
+        <div key={idx} className="col-xxl-2 col-lg-4 col-sm-4">
           <div className="card shadow-sm border-0">
             <div className="card-body">
               <div className="d-flex justify-content-between">

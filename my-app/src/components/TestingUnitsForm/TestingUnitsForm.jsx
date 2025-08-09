@@ -47,17 +47,17 @@ const TestingUnitsForm = () => {
 
         <div className="col-md-4">
           <label className="form-label clr-label">OSM Number</label>
-          <input type="text" name="osmNumber" value={formData.osmNumber} onChange={handleChange} className="form-control frm-input-style" required />
+          <input type="text" name="osmNumber" value={formData.osmNumber} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter OSM number' required />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Accepted</label>
-          <input type="number" name="accepted" value={formData.accepted} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="number" name="accepted" value={formData.accepted} onChange={handleChange} className="form-control frm-input-style" placeholder='accepted count' />
         </div>
 
         <div className="col-md-4">
           <label className="form-label clr-label">Rejected</label>
-          <input type="number" name="rejected" value={formData.rejected} onChange={handleChange} className="form-control frm-input-style" />
+          <input type="number" name="rejected" value={formData.rejected} onChange={handleChange} className="form-control frm-input-style"placeholder='rejected count' />
         </div>
 
         <div className="col-md-4">

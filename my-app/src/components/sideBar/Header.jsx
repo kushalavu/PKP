@@ -15,13 +15,22 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { VscError } from "react-icons/vsc";
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
-
+import Cookies from 'js-cookie';
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+const [role, setRole] = useState(null);
+  useEffect(() => {
+    const cookieRole = Cookies.get('userRole');
+    if (cookieRole) {
+      setRole(cookieRole);
+      console.log('User role from cookie:', cookieRole);
+    } else {
+      console.warn('No role cookie found');
+    }
+  }, []);
   const handleLogout = () => {
     localStorage.clear();
     setShowModal(false);
@@ -65,7 +74,7 @@ const Header = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-xxl-3 col-lg-5 col-6">
-              <h5 className="navbar-brand text-white mt-3">Loki - Let’s check your inventory today</h5>
+              <h5 className="navbar-brand text-white mt-3">{role === 'admin' ? 'Adam Let’s check your inventory today' : 'Lokhi Let’s check your inventory today'}</h5>
             </div>
             <div className="col-xxl-7 col-lg-5 col-4">
               <input className="form-control me-5" type="search" placeholder="Search..." />
@@ -80,7 +89,7 @@ const Header = () => {
     className="rounded-circle me-3"
     style={{ cursor: 'pointer' }}
   />
-              <span>Manager</span></Link>
+              <span>{role === 'admin' ? 'Admin' : 'Manager'}</span></Link>
             </div>
           </div>
         </div>

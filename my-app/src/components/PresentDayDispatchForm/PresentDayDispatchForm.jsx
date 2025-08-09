@@ -56,7 +56,7 @@ const PresentDayDispatchForm = () => {
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <label className="form-label clr-label">Quantity</label>
-                        <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="form-control frm-input-style" />
+                        <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="form-control frm-input-style"placeholder='Please enter quantity' />
                     </div>
                     <div className="col-md-4">
                         <label className="form-label clr-label">Add New Process</label>

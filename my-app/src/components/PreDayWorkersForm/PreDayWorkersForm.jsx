@@ -41,52 +41,52 @@ const PreDayWorkersForm = () => {
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Core Drilling</label>
-                            <input type="number" name="coreDrilling" value={formData.coreDrilling} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="coreDrilling" value={formData.coreDrilling} onChange={handleChange} className="form-control frm-input-style"placeholder='Core drilling' />
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Core Visual</label>
-                            <input type="number" name="coreVisual" value={formData.coreVisual} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="coreVisual" value={formData.coreVisual} onChange={handleChange} className="form-control frm-input-style" placeholder='Core visual'/>
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-4">
                             <label className="form-label clr-label">Magnetic Core Drilling</label>
-                            <input type="number" name="magneticDrilling" value={formData.magneticDrilling} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="magneticDrilling" value={formData.magneticDrilling} onChange={handleChange} className="form-control frm-input-style" placeholder='Magnetic core drilling'/>
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Magnetic Core Visual</label>
-                            <input type="number" name="magneticVisual" value={formData.magneticVisual} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="magneticVisual" value={formData.magneticVisual} onChange={handleChange} className="form-control frm-input-style"placeholder='Magnetic core visual' />
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">PIP</label>
-                            <input type="number" name="pip" value={formData.pip} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="pip" value={formData.pip} onChange={handleChange} className="form-control frm-input-style"placeholder='PIP' />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-4">
                             <label className="form-label clr-label">Sorting Out</label>
-                            <input type="number" name="sortingOut" value={formData.sortingOut} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="sortingOut" value={formData.sortingOut} onChange={handleChange} className="form-control frm-input-style"placeholder='Sorting out' />
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Plated Visual</label>
-                            <input type="number" name="platedVisual" value={formData.platedVisual} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="platedVisual" value={formData.platedVisual} onChange={handleChange} className="form-control frm-input-style" placeholder='Plated visual'/>
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Pole Tap</label>
-                            <input type="number" name="poleTap" value={formData.poleTap} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="number" name="poleTap" value={formData.poleTap} onChange={handleChange} className="form-control frm-input-style"placeholder='Pole tap' />
                         </div>
                     </div>
 
                     <div className="row mb-4">
                         <div className="col-md-4">
                             <label className="form-label clr-label">OSM</label>
-                            <input type="text" name="osm" value={formData.osm} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="text" name="osm" value={formData.osm} onChange={handleChange} className="form-control frm-input-style"placeholder='OMS' />
                         </div>
                         <div className="col-md-4">
                             <label className="form-label clr-label">Add New Process</label>
-                            <input type="text" name="newProcess" value={formData.newProcess} onChange={handleChange} className="form-control frm-input-style" />
+                            <input type="text" name="newProcess" value={formData.newProcess} onChange={handleChange} className="form-control frm-input-style"placeholder='Add new process' />
                         </div>
                         <div className="col-md-4 d-flex align-items-end">
                             <button type="submit" className="btn btn-blue-clr px-4">Submit</button>

@@ -1,10 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
-// React Icons imports
 import { FiFilePlus } from "react-icons/fi";
 import { TbChecklist } from "react-icons/tb";
 import { HiOutlineRefresh } from "react-icons/hi";
@@ -19,14 +20,40 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+ const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const cookieRole = Cookies.get('userRole');
+    if (cookieRole) {
+      setRole(cookieRole);
+      console.log('User role from cookie:', cookieRole);
+    } else {
+      console.warn('No role cookie found');
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
+    Cookies.remove('userRole'); // Optional: clear the cookie too
     setShowModal(false);
     router.push('/');
   };
 
-  const menuItems = [
+  const menuItemsAdmin = [
+    { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement-admin' },
+    { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit-admin' },
+    { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production-admin' },
+    { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation-admin' },
+    { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
+    { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch-admin' },
+    { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress-admin' },
+    { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
+    { label: 'Notes', icon: <FaRegStickyNote />, href: '/notes-admin' },
+    { label: 'Machine Stoppage Details', icon: <VscError />, href: '/stoppage-admin' },
+    { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
+  ];
+
+  const menuItemsManager = [
     { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement' },
     { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit' },
     { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production' },
@@ -40,10 +67,13 @@ const Sidebar = () => {
     { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
   ];
 
+  const menuItems = role === 'admin' ? menuItemsAdmin : menuItemsManager;
+
+  if (!role) return null; // prevent premature render if role not loaded
+
   return (
     <>
       <aside className="min-vh-100 d-flex flex-column">
-        {/* Logo */}
         <div className="d-flex flex-column align-items-center justify-content-center text-center p-3 d-lg-block d-none">
           <Image
             src="/assets/logo.svg"
@@ -83,7 +113,7 @@ const Sidebar = () => {
         </div>
       </aside>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Modal */}
       {showModal && (
         <>
           <div className="modal-backdrop fade show"></div>
