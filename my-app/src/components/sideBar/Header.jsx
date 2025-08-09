@@ -37,20 +37,35 @@ const [role, setRole] = useState(null);
     router.push('/login');
   };
 
-  const menuItems = [
-    { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement' },
-    { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit' },
-    { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production' },
-    { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation' },
-    { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
-    { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch' },
-    { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress' },
-    { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
-    { label: 'Notes', icon: <FaRegStickyNote />, href: '/notes' },
-    { label: 'Machine Stoppage Details', icon: <VscError />, href: '/stoppage' },
-    { label: 'Profile', icon: <CgProfile />, href: '/profile' },
-    { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
-  ];
+    const menuItemsAdmin = [
+      { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement-admin' },
+      { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit-admin' },
+      { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production-admin' },
+      { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation-admin' },
+      { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
+      { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch-admin' },
+      { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress-admin' },
+      { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
+      { label: 'Notes', icon: <FaRegStickyNote />, href: '/notes-admin' },
+      { label: 'Machine Stoppage Details', icon: <VscError />, href: '/stoppage-admin' },
+      { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
+    ];
+  
+    const menuItemsManager = [
+      { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement' },
+      { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit' },
+      { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production' },
+      { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation' },
+      { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
+      { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch' },
+      { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress' },
+      { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
+      { label: 'Notes', icon: <FaRegStickyNote />, href: '/notes' },
+      { label: 'Machine Stoppage Details', icon: <VscError />, href: '/stoppage' },
+      { label: 'Logout', icon: <RiLogoutBoxRLine />, action: () => setShowModal(true) },
+    ];
+  
+    const menuItems = role === 'admin' ? menuItemsAdmin : menuItemsManager;
 
   const handleItemClick = (item) => {
     if (item.action) {
