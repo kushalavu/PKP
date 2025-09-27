@@ -1,19 +1,20 @@
-import React from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import NewRequirementForm from '@/components/newRequirement/NewRequirementForm';
-import FileUploadBlock from '@/components/newRequirement/FileUploadBlock';
 import '@/components/newRequirement/requirment.css'
+import NewRequirementSkeleton from '@/components/CommonComponents/newRequermentSkeleton'
 
 const NewRequirementPage = () => {
+    const [loading, setLoading] = useState(true);
+         useEffect(() => {
+        // Simulate API fetch
+        const timer = setTimeout(() => setLoading(false), 1500);
+        return () => clearTimeout(timer);
+      }, []);
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-xxl-4 col-lg-6 col-12 mb-4">
-          <NewRequirementForm />
-        </div>
-        <div className="col-xxl-8 col-lg-6 col-12">
-          <FileUploadBlock />
-        </div>
-      </div>
+          {loading ? <NewRequirementSkeleton /> : <NewRequirementForm />} </div>
     </div>
   );
 };

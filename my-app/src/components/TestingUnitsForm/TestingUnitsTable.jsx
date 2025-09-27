@@ -1,30 +1,149 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { IoMdCloseCircleOutline } from "react-icons/io";
-const TestingUnitsTable = () => {
-  return (
-<>
-      <h5 className='fw-bold'>PRIMARY DATA</h5>
-      <p className="text-muted small init-nav-co">Parchment be turns stand veela fawkes mistletoe snare drops.</p>
 
-      {/* Filters */}
+const TestingUnitsTable = forwardRef((props, ref) => {
+  const [units, setUnits] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({ date: '', partName: '' });
+  const [editRow, setEditRow] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+
+
+  const modalRef = useRef();
+
+  const fetchUnits = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.date) params.append('date', filters.date);
+      if (filters.partName) params.append('partName', filters.partName);
+
+      const res = await axios.get(`/api/testing-units?${params.toString()}`);
+      setUnits(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch records');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Expose fetchUnits to parent
+  useImperativeHandle(ref, () => ({
+    fetchUnits
+  }));
+
+  useEffect(() => {
+    fetchUnits();
+  }, [filters]);
+
+  const handleEdit = (id) => setEditRow(id);
+
+ const handleSave = async (id) => {
+  const row = units.find(u => u.Id === id);
+  const original = props.refData?.find(u => u.Id === id) || row; // fallback if original not passed
+
+  // Check if anything changed
+  const isChanged =
+    Number(row.Accepted || 0) !== Number(original.Accepted || 0) ||
+    Number(row.Rejected || 0) !== Number(original.Rejected || 0);
+
+  if (!isChanged) {
+    setEditRow(null);
+    toast.info("No changes made");
+    return;
+  }
+
+  try {
+    await axios.put('/api/testing-units', {
+      id,
+      accepted: row.Accepted,
+      rejected: row.Rejected,
+      total: row.Total
+    });
+    toast.success('Updated successfully');
+    setEditRow(null);
+    fetchUnits();
+  } catch (err) {
+    console.error(err);
+    toast.error('Update failed');
+  }
+};
+
+
+  const handleChange = (id, field, value) => {
+    setUnits(prev =>
+      prev.map(u =>
+        u.Id === id
+          ? {
+            ...u,
+            [field]: value,
+            Total:
+              field === 'Accepted' || field === 'Rejected'
+                ? parseInt(u.Accepted || 0) + parseInt(u.Rejected || 0)
+                : u.Total
+          }
+          : u
+      )
+    );
+  };
+
+  // Open delete confirmation modal
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);  // This will show the modal
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      await axios.delete(`/api/testing-units?id=${deleteId}`);
+      toast.success('Deleted successfully');
+      fetchUnits();
+    } catch (err) {
+      console.error(err);
+      toast.error('Delete failed');
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteId(null);
+    }
+  };
+
+  return (
+    <>
+      <h5 className='fw-bold mt-3'>PRIMARY DATA</h5>
+      <p className="text-muted small init-nav-co">Testing unit records</p>
+
       <div className="d-flex gap-2 flex-wrap mb-3">
-        <input type="date" className="form-control frm-table-style me-2" style={{ maxWidth: '200px' }} />
-        <select className="form-select frm-table-style" style={{ maxWidth: '200px' }}>
-          <option>Part Name</option>
+        <input
+          type="date"
+          className="form-control frm-table-style me-2"
+          style={{ maxWidth: '200px' }}
+          value={filters.date}
+          onChange={e => setFilters(prev => ({ ...prev, date: e.target.value }))}
+        />
+        <select
+          className="form-select frm-table-style"
+          style={{ maxWidth: '200px' }}
+          value={filters.partName}
+          onChange={e => setFilters(prev => ({ ...prev, partName: e.target.value }))}
+        >
+          <option value="">Part Name</option>
+          <option value="Motor">Motor</option>
+          <option value="Bearing">Bearing</option>
         </select>
-        <select className="form-select frm-table-style" style={{ maxWidth: '200px' }}>
-          <option>Accepted/Rejected</option>
-        </select>
-        <select className="form-select frm-table-style" style={{ maxWidth: '200px' }}>
-          <option>Deleted</option>
-        </select>
-        <button className="btn btn-outline-secondary">Clear All <IoMdCloseCircleOutline /></button>
+        <button className="btn btn-outline-secondary" onClick={() => setFilters({ date: '', partName: '' })}>
+          Clear All <IoMdCloseCircleOutline />
+        </button>
       </div>
 
-      {/* Table */}
-     {/* Table Scroll Wrapper */}
-      <div className="table-scroll-wrapper">
+      <div className="table-scroll-wrapper over-with-hv">
         <table className="table table-bordered">
           <thead className="table-primary">
             <tr>
@@ -38,25 +157,92 @@ const TestingUnitsTable = () => {
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody className='mt-3'>
-            {Array.from({ length: 30 }).map((_, i) => (
-              <tr key={i}>
-                <td>2025-07-26</td>
-                <td>Item {i + 1}</td>
-                <td>OSM123{i}</td>
-                <td>12</td>
-                <td>3</td>
-                <td>15</td>
-                <td>Edit</td>
-                <td>Delete</td>
-              </tr>
-            ))}
+          <tbody>
+            {loading
+              ? Array(5).fill().map((_, i) => (
+                <tr key={i}>
+                  {Array(8).fill().map((_, j) => (
+                    <td key={j}><Skeleton /></td>
+                  ))}
+                </tr>
+              ))
+              : units.length === 0
+                ? <tr><td colSpan={8}>No records found</td></tr>
+                : units.map(u => (
+                  <tr key={u.Id}>
+                    <td>{new Date(u.Date).toLocaleDateString()}</td>
+                    <td>{u.PartName}</td>
+                    <td>{u.OSMNumber}</td>
+                    <td>
+                      {editRow === u.Id ? (
+                        <input
+                          type="number"
+                          value={u.Accepted}
+                          onChange={e => handleChange(u.Id, 'Accepted', e.target.value)}
+                        />
+                      ) : (
+                        u.Accepted
+                      )}
+                    </td>
+                    <td>
+                      {editRow === u.Id ? (
+                        <input
+                          type="number"
+                          value={u.Rejected}
+                          onChange={e => handleChange(u.Id, 'Rejected', e.target.value)}
+                        />
+                      ) : (
+                        u.Rejected
+                      )}
+                    </td>
+                    <td>
+                      {editRow === u.Id ? (
+                        // Show reactive Total in edit mode
+                        parseInt(u.Accepted || 0) + parseInt(u.Rejected || 0)
+                      ) : (
+                        u.Total
+                      )}
+                    </td>
+
+                    <td>
+                      {editRow === u.Id ? (
+                        <button className="btn btn-success btn-sm" onClick={() => handleSave(u.Id)}>Save</button>
+                      ) : (
+                        <button className="btn btn-primary btn-sm" onClick={() => handleEdit(u.Id)}>Edit</button>
+                      )}
+                    </td>
+                    <td>
+                      <button className="btn btn-danger btn-sm" onClick={() => confirmDelete(u.Id)}>Delete</button>
+                    </td>
+                  </tr>
+                ))
+            }
           </tbody>
         </table>
       </div>
-      </>
+
+      {showDeleteModal && (
+        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button type="button" className="btn-close" onClick={() => setShowDeleteModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                Are you sure you want to delete this record?
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                <button className="btn btn-danger" onClick={handleDeleteConfirmed}>Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </>
   );
-};
+});
 
 export default TestingUnitsTable;
-

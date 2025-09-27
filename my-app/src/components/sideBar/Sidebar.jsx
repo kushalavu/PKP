@@ -84,7 +84,7 @@ const Sidebar = () => {
           />
         </div>
 
-        <div className="custom-sidebar min-vh-100 d-flex flex-column mt-1 d-lg-block d-none">
+        <div className="custom-sidebar d-flex flex-column mt-1 d-lg-block d-none">
           <ul className="nav nav-pills flex-column init-nav-co mt-2">
             {menuItems.map((item, index) => (
               <li key={index} className="nav-item p-2">

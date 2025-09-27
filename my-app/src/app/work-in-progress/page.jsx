@@ -1,6 +1,19 @@
+'use client'
+import React, { useState, useEffect } from 'react';
+import CommonSkeletonLoader from '@/components/CommonComponents/CommonSkeletonLoader'
 import WorkInProgressForm from "@/components/WorkInProgressForm/WorkInProgressForm";
 
 const page = () => {
-  return <WorkInProgressForm />;
+        const [loading, setLoading] = useState(true);
+             useEffect(() => {
+            // Simulate API fetch
+            const timer = setTimeout(() => setLoading(false), 1500);
+            return () => clearTimeout(timer);
+          }, []);
+  return (
+      <>
+{loading ? <CommonSkeletonLoader /> : <WorkInProgressForm />}
+  </> 
+  )
 }
 export default page;

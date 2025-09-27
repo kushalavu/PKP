@@ -1,45 +1,157 @@
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { Modal, Button } from 'react-bootstrap';
 
-const NotesTable = () => {
+const NotesTable = ({ refreshFlag }) => {
+  const [notes, setNotes] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editedRow, setEditedRow] = useState({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedNoteId, setSelectedNoteId] = useState(null);
+
+  const fetchNotes = async () => {
+    try {
+      const res = await axios.get('/api/notes');
+      setNotes(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch notes');
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, [refreshFlag]);
+
+  const handleEdit = (row) => {
+    setEditingId(row.Id);
+    setEditedRow({ ...row });
+  };
+
+  const handleChange = (e, field) => {
+    setEditedRow({ ...editedRow, [field]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.put('/api/notes', editedRow);
+      toast.success('Note updated successfully!');
+      setEditingId(null);
+      fetchNotes();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to update note');
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    setSelectedNoteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`/api/notes?id=${selectedNoteId}`);
+      toast.success('Note deleted successfully!');
+      fetchNotes();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete note');
+    } finally {
+      setShowDeleteModal(false);
+      setSelectedNoteId(null);
+    }
+  };
+
   return (
     <div className="mt-5">
       <h5><strong>Notes</strong></h5>
-      <p className="text-muted">Please fill out the form to submit Testing Unit (OSM) Details</p>
+      <p className="text-muted">View and manage notes here</p>
       <div className="table-responsive">
         <table className="table table-bordered text-center">
           <thead className="table-primary">
             <tr>
               <th>Date</th>
+              <th>For Plating</th>
               <th>Notes</th>
-              <th>View</th>
               <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>12-03-2025</td>
-              <td>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                <br />
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-              </td>
-              <td>
-                <button className="btn btn-outline-primary btn-sm">
-                  View <i className="bi bi-eye"></i>
-                </button>
-              </td>
-              <td>
-                <button className="btn btn-outline-primary btn-sm">
-                  Edit <i className="bi bi-pencil"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="4">No additional notes.</td>
-            </tr>
+            {notes.length === 0 ? (
+              <tr>
+                <td colSpan="5">No notes available</td>
+              </tr>
+            ) : (
+              notes.map((row) => (
+                <tr key={row.Id}>
+                  <td>{row.Date?.split('T')[0]}</td>
+                  <td>
+                    {editingId === row.Id ? (
+                      <input
+                        type="text"
+                        value={editedRow.ForPlating}
+                        onChange={(e) => handleChange(e, 'ForPlating')}
+                        className="form-control"
+                      />
+                    ) : row.ForPlating}
+                  </td>
+                  <td>
+                    {editingId === row.Id ? (
+                      <textarea
+                        value={editedRow.Note}
+                        onChange={(e) => handleChange(e, 'Note')}
+                        className="form-control"
+                      />
+                    ) : row.Note}
+                  </td>
+                  <td>
+                    {editingId === row.Id ? (
+                      <>
+                        <button className="btn btn-success btn-sm me-2" onClick={handleSave}>Save</button>
+                        <button className="btn btn-secondary btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
+                      </>
+                    ) : (
+                      <button className="btn btn-outline-primary btn-sm" onClick={() => handleEdit(row)}>
+                        Edit <i className="bi bi-pencil"></i>
+                      </button>
+                    )}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDeleteClick(row.Id)}
+                    >
+                      Delete <i className="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this note?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

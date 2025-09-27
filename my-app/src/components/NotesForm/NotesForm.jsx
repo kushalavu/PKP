@@ -1,22 +1,38 @@
 'use client';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NotesTable from './NotesTable';
 
 const NotesForm = () => {
   const [formData, setFormData] = useState({
     date: '',
+    forPlating: '',
     note: '',
   });
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Note Submitted:', formData);
-    //  API call here
+    if (!formData.date || !formData.note) {
+      toast.error('Date and Note are required!');
+      return;
+    }
+    try {
+      await axios.post('/api/notes', formData);
+      toast.success('Note added successfully!');
+      setFormData({ date: '', forPlating: '', note: '' });
+      setRefreshFlag(prev => !prev); // trigger refresh
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to add note');
+    }
   };
 
   return (
@@ -24,9 +40,9 @@ const NotesForm = () => {
       <div className="card p-4">
         <h5 className='fw-bold mt-2'>Notes</h5>
         <p className="text-muted d-block mb-3">
-          Please fill out the form to submit Testing Unit (OSM) Details
+          Fill out the form to capture important updates from today’s meeting
         </p>
-<hr/>
+        <hr/>
         <form onSubmit={handleSubmit}>
           <div className="row mb-3 mt-3">
             <div className="col-md-6">
@@ -40,10 +56,12 @@ const NotesForm = () => {
               />
             </div>
             <div className="col-md-6">
-              <label className="form-label clr-label">For Plating</label>
+              <label className="form-label clr-label">Progress</label>
               <input
                 type="text"
                 name="forPlating"
+                value={formData.forPlating}
+                onChange={handleChange}
                 className="form-control frm-input-style"
                 placeholder="(Optional - Ignore if unused)"
               />
@@ -51,7 +69,7 @@ const NotesForm = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label clr-label">Under Heat Treatment</label>
+            <label className="form-label clr-label">Note</label>
             <textarea
               className="form-control frm-input-style"
               name="note"
@@ -65,9 +83,10 @@ const NotesForm = () => {
           <button type="submit" className="btn btn-blue-clr px-5">Submit</button>
         </form>
       </div>
-      <div className="ROW">
+
+      <div className="row">
         <div className="col-sm-12">
-          <NotesTable />
+          <NotesTable refreshFlag={refreshFlag} />
         </div>
       </div>
     </div>

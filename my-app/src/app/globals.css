@@ -1,7 +1,19 @@
 .custom-sidebar {
     background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
     width: 250px;
-    font-size: 14px;}
+    font-size: 14px;
+    height: 100vh;     /* stays within viewport */
+  overflow-y: auto;      /* adds vertical scroll when needed */
+  overflow-x: hidden; 
+  }
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: #151E58;
+}
 
 .custom-sidebar-2 {
     background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
@@ -30,7 +42,7 @@
     height: auto;
 }
 label.clr-label {
-    color: #747681;
+    color: #434345;
     font-weight: 600;
 }
 
@@ -53,20 +65,20 @@ label.clr-label {
 }
 
 .frm-input-style {
-    color: #747681;
+    color: #0c0c0d;
     padding: 8px;
     border-radius: 8px;
     border: 1px solid #00000066;
-    background: #FAFAFA;
+    background: #fbfbfb;
 }
 
 .frm-input-style:focus {
     box-shadow: none;
-    color: #747681;
+    color: #0c0c0d;
     padding: 8px;
     border-radius: 8px;
     border: 1px solid #00000066;
-    background: #FAFAFA;
+    background: #fbfbfb;
 }
 
 .btn.btn-blue-clr {

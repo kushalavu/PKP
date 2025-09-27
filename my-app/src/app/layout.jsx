@@ -8,6 +8,8 @@ import { usePathname } from 'next/navigation';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./globals.css";
 
 const poppins = Poppins({
@@ -36,6 +38,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`layout-scroll ${poppins.variable}`}>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         {isMinimalRoute ? (
           <main className="">{children}</main>
         ) : (

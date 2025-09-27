@@ -51,7 +51,7 @@ export default function PrevDayProductionAdmin() {
               <th>2nd Shift</th>
               <th>Total in Numbers</th>
               <th>% of Production Achieved</th>
-              <th>Production (Target)</th>
+              <th>Production(Target)</th>
             </tr>
           </thead>
           <tbody>
