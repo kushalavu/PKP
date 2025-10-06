@@ -4,6 +4,7 @@
 import Sidebar from "@/components/sideBar/Sidebar";
 import Header from "@/components/sideBar/Header";
 import { Poppins } from 'next/font/google';
+import { SessionProvider } from "next-auth/react";
 import { usePathname } from 'next/navigation';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from 'react';
@@ -38,17 +39,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`layout-scroll ${poppins.variable}`}>
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+ <ToastContainer
+  position="top-center"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="colored"   // important to make it visible
+/>
+          <SessionProvider>
         {isMinimalRoute ? (
           <main className="">{children}</main>
         ) : (
@@ -68,6 +71,7 @@ export default function RootLayout({ children }) {
             </div>
           </div>
         )}
+          </SessionProvider>
       </body>
     </html>
   );

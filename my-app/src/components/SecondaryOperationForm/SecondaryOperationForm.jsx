@@ -36,37 +36,43 @@ const SecondaryOperationForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length) {
-      setErrors(validationErrors);
-      return;
-    }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    try {
-      setLoading(true);
-      await axios.post('/api/secondary-operation', formData);
+  try {
+    setLoading(true);
+    await axios.post('/api/secondary-operation', formData);
 
-      // Reset form
-      setFormData({
-        date: '',
-        partName: '',
-        coreCSKDone: '',
-        coreVisualDone: '',
-        magneticDrill: '',
-        magneticVisual: '',
-        pivotPin: '',
-      });
-      setErrors({});
-      setRefreshFlag(prev => prev + 1); // Trigger table refresh
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Failed to submit data');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Show success message
+    toast.success("Data submitted successfully");
+
+    // Reset form
+    setFormData({
+      date: '',
+      partName: '',
+      coreCSKDone: '',
+      coreVisualDone: '',
+      magneticDrill: '',
+      magneticVisual: '',
+      pivotPin: '',
+    });
+    setErrors({});
+    
+    // Trigger table refresh
+    setRefreshFlag(prev => prev + 1); 
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    toast.error('Failed to submit data');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="container-fluid form-complete-bg p-4">

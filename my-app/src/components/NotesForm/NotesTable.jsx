@@ -14,10 +14,10 @@ const NotesTable = ({ refreshFlag }) => {
   const fetchNotes = async () => {
     try {
       const res = await axios.get('/api/notes');
-      setNotes(res.data);
+      setNotes(res.data?.data);
     } catch (err) {
       console.error(err);
-      toast.error('Failed to fetch notes');
+      toast.error(es.data?.message);
     }
   };
 
@@ -36,8 +36,8 @@ const NotesTable = ({ refreshFlag }) => {
 
   const handleSave = async () => {
     try {
-      await axios.put('/api/notes', editedRow);
-      toast.success('Note updated successfully!');
+      const reuest = await axios.put('/api/notes', editedRow);
+      toast.success(reuest.data?.message);
       setEditingId(null);
       fetchNotes();
     } catch (err) {
@@ -53,8 +53,8 @@ const NotesTable = ({ refreshFlag }) => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/notes?id=${selectedNoteId}`);
-      toast.success('Note deleted successfully!');
+      const resDelete = await axios.delete(`/api/notes?id=${selectedNoteId}`);
+      toast.success(resDelete.data.message);
       fetchNotes();
     } catch (err) {
       console.error(err);
@@ -88,46 +88,81 @@ const NotesTable = ({ refreshFlag }) => {
             ) : (
               notes.map((row) => (
                 <tr key={row.Id}>
-                  <td>{row.Date?.split('T')[0]}</td>
+                  <td>{new Date(row.Date).toLocaleDateString()}</td>
                   <td>
                     {editingId === row.Id ? (
                       <input
                         type="text"
-                        value={editedRow.ForPlating}
+                        value={editedRow.ForPlating || ''}
                         onChange={(e) => handleChange(e, 'ForPlating')}
                         className="form-control"
                       />
-                    ) : row.ForPlating}
+                    ) : row.ForPlating && row.ForPlating.trim() !== '' ? (
+                      row.ForPlating
+                    ) : (
+                      '-'
+                    )}
                   </td>
                   <td>
                     {editingId === row.Id ? (
                       <textarea
-                        value={editedRow.Note}
+                        value={editedRow.Note || ''}
                         onChange={(e) => handleChange(e, 'Note')}
                         className="form-control"
                       />
-                    ) : row.Note}
+                    ) : row.Note && row.Note.trim() !== '' ? (
+                      row.Note
+                    ) : (
+                      '-'
+                    )}
                   </td>
                   <td>
                     {editingId === row.Id ? (
                       <>
-                        <button className="btn btn-success btn-sm me-2" onClick={handleSave}>Save</button>
-                        <button className="btn btn-secondary btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
+                        <button
+                          className="btn btn-success btn-sm me-2"
+                          onClick={async () => {
+                            try {
+                              if (!editedRow.Date || !editedRow.Note) {
+                                toast.error('Date and Note are required!');
+                                return;
+                              }
+
+                              await axios.put('/api/notes', {
+                                id: editedRow.Id, // Make sure ID is sent
+                                Date: editedRow.Date,
+                                ForPlating: editedRow.ForPlating,
+                                Note: editedRow.Note
+                              });
+
+                              toast.success('Note updated successfully!');
+                              setEditingId(null);
+                              fetchNotes();
+                            } catch (err) {
+                              console.error(err);
+                              toast.error(err.response?.data?.message || 'Failed to update note');
+                            }
+                          }}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          onClick={() => setEditingId(null)}
+                        >
+                          Cancel
+                        </button>
                       </>
                     ) : (
-                      <button className="btn btn-outline-primary btn-sm" onClick={() => handleEdit(row)}>
+                      <button
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={() => handleEdit(row)}
+                      >
                         Edit <i className="bi bi-pencil"></i>
                       </button>
                     )}
                   </td>
-                  <td>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDeleteClick(row.Id)}
-                    >
-                      Delete <i className="bi bi-trash"></i>
-                    </button>
-                  </td>
+
                 </tr>
               ))
             )}

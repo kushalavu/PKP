@@ -12,6 +12,7 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editedRow, setEditedRow] = useState({});
+  const [saving, setSaving] = useState(false); // Add this near other useState hooks
   const [deleteId, setDeleteId] = useState(null); // ID for deletion
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -53,21 +54,55 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
 
   // Handle input changes
   const handleChange = (e, field) => {
-    const numericFields = ["coreCSKDone","coreVisualDone","magneticDrill","magneticVisual","pivotPin"];
+    const numericFields = ["coreCSKDone", "coreVisualDone", "magneticDrill", "magneticVisual", "pivotPin"];
     const value = numericFields.includes(field) ? Number(e.target.value) : e.target.value;
     setEditedRow({ ...editedRow, [field]: value });
   };
 
   // Save edited row
-  const handleSave = async () => {
-    try {
-      await axios.put("/api/secondary-operation", editedRow);
-      setEditingId(null);
-      fetchData();
-    } catch (err) {
-      console.error("Update failed", err);
-    }
-  };
+const handleSave = async () => {
+  if (saving) return;
+  setSaving(true);
+
+  // Find the original row
+  const original = data.find(r => r.Id === editedRow.id);
+  if (!original) {
+    toast.error("Original data not found");
+    setSaving(false);
+    return;
+  }
+
+  // Map editedRow fields to original row fields
+  const fields = ["PartName", "CoreCSKDone", "CoreVisualDone", "MagneticDrill", "MagneticVisual", "PivotPin"];
+  const hasChanges = fields.some(field => {
+    const originalValue = original[field];
+    const editedValue = editedRow[field] ?? editedRow[field.charAt(0).toLowerCase() + field.slice(1)];
+    if (typeof originalValue === "number") return Number(originalValue) !== Number(editedValue);
+    return originalValue !== editedValue;
+  });
+
+  if (!hasChanges) {
+    toast.info("No changes detected");
+    setEditingId(null);
+    setSaving(false);
+    return; // Prevent submission
+  }
+
+  try {
+    const res = await axios.put("/api/secondary-operation", editedRow);
+    toast.success(res.data.message || "Record updated successfully");
+    setEditingId(null);
+    fetchData();
+  } catch (err) {
+    console.error(err);
+    toast.error("Update failed");
+  } finally {
+    setSaving(false);
+  }
+};
+
+
+
 
   // Open delete modal
   const confirmDelete = (id) => {
@@ -94,40 +129,37 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
       <p className="text-muted small">Filter and view secondary operation details</p>
 
       {/* Filters */}
-      <div className="row g-2 mb-3">
-        <div className="col-md-2">
+     <div className="d-flex gap-2 flex-wrap mb-3">
+    
           <input
             type="date"
-            className="form-control"
+            className="form-control frm-input-style"
             value={filters.date}
             onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+            style={{ maxWidth: '180px' }}
           />
-        </div>
-        <div className="col-md-2">
+
           <select
             name="partName"
             value={filters.partName}
             onChange={(e) => setFilters({ ...filters, partName: e.target.value })}
-            className="form-select frm-table-style"
-            style={{ maxWidth: '180px' }}
+               className="form-select frm-input-style"
+          style={{ maxWidth: '180px' }}
           >
             <option value="">All Parts</option>
             <option value="Motor">Motor</option>
             <option value="Bearing">Bearing</option>
           </select>
-        </div>
-        <div className="col-md-1">
           <button
-            className="btn btn-outline-secondary w-100"
+            className="btn frm-input-style"
             onClick={() => setFilters({ date: "", partName: "" })}
           >
             Clear <IoMdCloseCircleOutline />
           </button>
-        </div>
       </div>
 
       {/* Table */}
-      <div className="table-scroll-wrapper">
+      <div className="table-responsive">
         <table className="table table-bordered">
           <thead className="table-primary">
             <tr>
@@ -160,7 +192,7 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
             ) : data.length > 0 ? (
               data.map((row) => (
                 <tr key={row.Id}>
-                  <td>{row.Date?.split("T")[0]}</td>
+                  <td>{new Date(row.Date).toLocaleDateString()}</td>
 
                   <td>
                     {editingId === row.Id ? (
@@ -243,15 +275,16 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
                   <td>
                     {editingId === row.Id ? (
                       <>
-                        <button className="btn btn-success btn-sm me-2" onClick={handleSave}>
-                          Save
-                        </button>
-                        <button className="btn btn-secondary btn-sm" onClick={() => setEditingId(null)}>
-                          Cancel
+                        <button
+                          className="btn btn-success btn-sm w-100 me-2"
+                          onClick={handleSave}
+                          disabled={saving} // Prevent multiple clicks while saving
+                        >
+                          {saving ? "Saving..." : "Save"}
                         </button>
                       </>
                     ) : (
-                      <button className="btn btn-primary btn-sm me-2" onClick={() => handleEdit(row)}>
+                      <button className="btn btn-sm btn-edit w-100" onClick={() => handleEdit(row)}>
                         Edit
                       </button>
                     )}
@@ -276,7 +309,7 @@ const SecondaryOperationTable = ({ refreshFlag }) => {
       {/* Delete Modal */}
       {showDeleteModal && (
         <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Delete</h5>

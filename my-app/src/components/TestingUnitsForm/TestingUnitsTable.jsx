@@ -13,6 +13,7 @@ const TestingUnitsTable = forwardRef((props, ref) => {
   const [editRow, setEditRow] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [originalUnits, setOriginalUnits] = useState([]);
 
 
 
@@ -25,8 +26,15 @@ const TestingUnitsTable = forwardRef((props, ref) => {
       if (filters.date) params.append('date', filters.date);
       if (filters.partName) params.append('partName', filters.partName);
 
-      const res = await axios.get(`/api/testing-units?${params.toString()}`);
-      setUnits(res.data);
+const res = await axios.get(`/api/testing-units?${params.toString()}`);
+if (res.data.success) {
+  setUnits(res.data.data); // for rendering in the table
+  setOriginalUnits(res.data.data.map(u => ({ ...u }))); // separate copy for edit comparison
+} else {
+  setUnits([]);
+  setOriginalUnits([]); // also clear originalUnits if no data
+}
+
     } catch (err) {
       console.error(err);
       toast.error('Failed to fetch records');
@@ -34,6 +42,7 @@ const TestingUnitsTable = forwardRef((props, ref) => {
       setLoading(false);
     }
   };
+
 
   // Expose fetchUnits to parent
   useImperativeHandle(ref, () => ({
@@ -48,16 +57,20 @@ const TestingUnitsTable = forwardRef((props, ref) => {
 
  const handleSave = async (id) => {
   const row = units.find(u => u.Id === id);
-  const original = props.refData?.find(u => u.Id === id) || row; // fallback if original not passed
+  const original = originalUnits.find(u => u.Id === id);
 
-  // Check if anything changed
+  if (!original) {
+    toast.error("Original data not found");
+    return;
+  }
+
   const isChanged =
     Number(row.Accepted || 0) !== Number(original.Accepted || 0) ||
     Number(row.Rejected || 0) !== Number(original.Rejected || 0);
 
   if (!isChanged) {
-    setEditRow(null);
     toast.info("No changes made");
+    setEditRow(null);
     return;
   }
 
@@ -76,6 +89,7 @@ const TestingUnitsTable = forwardRef((props, ref) => {
     toast.error('Update failed');
   }
 };
+
 
 
   const handleChange = (id, field, value) => {
@@ -123,13 +137,13 @@ const TestingUnitsTable = forwardRef((props, ref) => {
       <div className="d-flex gap-2 flex-wrap mb-3">
         <input
           type="date"
-          className="form-control frm-table-style me-2"
+          className="form-control frm-input-style me-2"
           style={{ maxWidth: '200px' }}
           value={filters.date}
           onChange={e => setFilters(prev => ({ ...prev, date: e.target.value }))}
         />
         <select
-          className="form-select frm-table-style"
+          className="form-select frm-input-style"
           style={{ maxWidth: '200px' }}
           value={filters.partName}
           onChange={e => setFilters(prev => ({ ...prev, partName: e.target.value }))}
@@ -138,13 +152,13 @@ const TestingUnitsTable = forwardRef((props, ref) => {
           <option value="Motor">Motor</option>
           <option value="Bearing">Bearing</option>
         </select>
-        <button className="btn btn-outline-secondary" onClick={() => setFilters({ date: '', partName: '' })}>
+        <button className="btn frm-input-style" onClick={() => setFilters({ date: '', partName: '' })}>
           Clear All <IoMdCloseCircleOutline />
         </button>
       </div>
 
-      <div className="table-scroll-wrapper over-with-hv">
-        <table className="table table-bordered">
+      <div className="table-responsive over-with-hv 100vw">
+        <table className="table table-bordered text-center">
           <thead className="table-primary">
             <tr>
               <th>Date</th>
@@ -206,9 +220,16 @@ const TestingUnitsTable = forwardRef((props, ref) => {
 
                     <td>
                       {editRow === u.Id ? (
-                        <button className="btn btn-success btn-sm" onClick={() => handleSave(u.Id)}>Save</button>
+                        <button className="btn btn-success w-100 btn-sm" onClick={() => handleSave(u.Id)}>Save</button>
                       ) : (
-                        <button className="btn btn-primary btn-sm" onClick={() => handleEdit(u.Id)}>Edit</button>
+                        <button
+                          className="btn btn-edit btn-sm"
+                          onClick={() => handleEdit(u.Id)}
+                          disabled={loading}
+                        >
+                          Edit
+                        </button>
+
                       )}
                     </td>
                     <td>

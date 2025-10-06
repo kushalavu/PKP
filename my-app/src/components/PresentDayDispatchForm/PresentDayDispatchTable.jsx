@@ -23,14 +23,30 @@ const PresentDayDispatchTable = ({ refreshFlag }) => {
       if (filters.partName) params.append('partName', filters.partName);
 
       const res = await axios.get(`/api/present-day-dispatch?${params.toString()}`);
-      setData(res.data);
+console.log(res)
+    if (res.data.success) {
+  setData(res.data.data.map(d => ({
+    Id: d.Id ?? d.id,
+    Date: d.Date ?? d.date,
+    Customer: d.Customer ?? d.customer,
+    PartName: d.PartName ?? d.partName,
+    Quantity: d.Quantity ?? d.quantity,
+    NewProcess: d.NewProcess ?? d.newProcess
+  })));
+} else {
+  setData([]);
+  toast.info(res.data.message || "No records found");
+}
+
     } catch (err) {
       console.error(err);
-      toast.error('Failed to fetch dispatch data');
+      setData([]);
+      toast.error(err.response?.data?.message || "Failed to fetch data");
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchData();
@@ -142,60 +158,78 @@ const PresentDayDispatchTable = ({ refreshFlag }) => {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="7">Loading...</td>
-              </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td colSpan="7">No data available</td>
-              </tr>
-            ) : (
-              data.map((row) => (
-                <tr key={row.Id}>
-                  <td>{editingId === row.Id ? (
-                    <input type="date" value={editedRow.Date?.split("T")[0]} onChange={(e) => handleChange(e, 'Date')} className="form-control" />
-                  ) : row.Date?.split("T")[0]}</td>
+  {loading ? (
+    <tr key="loading">
+      <td colSpan="7">Loading...</td>
+    </tr>
+  ) : data.length === 0 ? (
+    <tr key="no-data">
+      <td colSpan="7">No data available</td>
+    </tr>
+  ) : (
+    data.map((row, index) => (
+      <tr key={row.Id ?? index}>
+        <td>{new Date(row.Date).toLocaleDateString()}</td>
 
-                  <td>{editingId === row.Id ? (
-                    <input type="text" value={editedRow.Customer} onChange={(e) => handleChange(e, 'Customer')} className="form-control" />
-                  ) : row.Customer}</td>
+        <td>{editingId === row.Id ? (
+          <input
+            type="text"
+            value={editedRow.Customer}
+            onChange={(e) => handleChange(e, 'Customer')}
+            className="form-control"
+          />
+        ) : row.Customer}</td>
 
-                  <td>{editingId === row.Id ? (
-                    <input type="text" value={editedRow.PartName} onChange={(e) => handleChange(e, 'PartName')} className="form-control" />
-                  ) : row.PartName}</td>
+        <td>{editingId === row.Id ? (
+          <input
+            type="text"
+            value={editedRow.PartName}
+            onChange={(e) => handleChange(e, 'PartName')}
+            className="form-control"
+          />
+        ) : row.PartName}</td>
 
-                  <td>{editingId === row.Id ? (
-                    <input type="number" value={editedRow.Quantity} onChange={(e) => handleChange(e, 'Quantity')} className="form-control" />
-                  ) : row.Quantity}</td>
+        <td>{editingId === row.Id ? (
+          <input
+            type="number"
+            value={editedRow.Quantity}
+            onChange={(e) => handleChange(e, 'Quantity')}
+            className="form-control"
+          />
+        ) : row.Quantity}</td>
 
-                  <td>{editingId === row.Id ? (
-                    <input type="text" value={editedRow.NewProcess} onChange={(e) => handleChange(e, 'NewProcess')} className="form-control" />
-                  ) : row.NewProcess}</td>
+        <td>{editingId === row.Id ? (
+          <input
+            type="text"
+            value={editedRow.NewProcess}
+            onChange={(e) => handleChange(e, 'NewProcess')}
+            className="form-control"
+          />
+        ) : row.NewProcess}</td>
 
-                  <td>
-                    {editingId === row.Id ? (
-                      <>
-                        <button className="btn btn-success btn-sm me-2" onClick={handleSave}>Save</button>
-                        <button className="btn btn-secondary btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
-                      </>
-                    ) : (
-                      <button className="btn btn-primary btn-sm" onClick={() => handleEdit(row)}>Edit</button>
-                    )}
-                  </td>
+        <td>
+          {editingId === row.Id ? (
+            <>
+              <button className="btn btn-success w-100 btn-sm me-2" onClick={handleSave}>Save</button>
+            </>
+          ) : (
+            <button className="btn btn-sm btn-edit w-100" onClick={() => handleEdit(row)}>Edit</button>
+          )}
+        </td>
 
-                  <td>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => setDeleteModal({ show: true, id: row.Id })}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
+        <td>
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => setDeleteModal({ show: true, id: row.Id })}
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
+
         </table>
       </div>
 

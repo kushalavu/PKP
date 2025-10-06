@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { signOut } from "next-auth/react";
 
 import { FiFilePlus } from "react-icons/fi";
 import { TbChecklist } from "react-icons/tb";
@@ -21,6 +22,7 @@ const Sidebar = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
  const [role, setRole] = useState(null);
+ 
 
   useEffect(() => {
     const cookieRole = Cookies.get('userRole');
@@ -32,12 +34,11 @@ const Sidebar = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    Cookies.remove('userRole'); // Optional: clear the cookie too
-    setShowModal(false);
-    router.push('/');
-  };
+const handleLogout = async () => {
+  await signOut({
+    callbackUrl: "/login" // after signout go here
+  });
+};
 
   const menuItemsAdmin = [
     { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement-admin' },
@@ -84,7 +85,7 @@ const Sidebar = () => {
           />
         </div>
 
-        <div className="custom-sidebar d-flex flex-column mt-1 d-lg-block d-none">
+        <div className="custom-sidebar sidebar-overflow d-flex flex-column mt-1 d-lg-block d-none">
           <ul className="nav nav-pills flex-column init-nav-co mt-2">
             {menuItems.map((item, index) => (
               <li key={index} className="nav-item p-2">

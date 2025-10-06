@@ -49,8 +49,8 @@ const PresentDayDispatchForm = () => {
 
     setLoading(true);
     try {
-      await axios.post('/api/present-day-dispatch', formData);
-      toast.success("Dispatch submitted successfully!");
+      const response = await axios.post('/api/present-day-dispatch', formData);
+      toast.success(response.data.message);
       setFormData({
         date: '',
         customer: '',

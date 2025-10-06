@@ -26,7 +26,7 @@ const PrevDayProductionTable = ({ refresh }) => {
       if (filters.partName) params.append('partName', filters.partName);
 
       const res = await axios.get(`/api/prev-day-production?${params.toString()}`);
-      setData(res.data);
+      setData(res.data.data);
     } catch (err) {
       console.error(err);
       toast.error('Failed to fetch data');
@@ -65,10 +65,10 @@ const PrevDayProductionTable = ({ refresh }) => {
   };
 
   // Edit actions
-const openEditModal = (record) => {
-  setEditRecord({ ...record });  // ensures Id is included
-  setShowEditModal(true);
-};
+  const openEditModal = (record) => {
+    setEditRecord({ ...record });  // ensures Id is included
+    setShowEditModal(true);
+  };
 
 
   const handleEditChange = (field, value) => {
@@ -86,63 +86,64 @@ const openEditModal = (record) => {
     });
   };
 
-const handleEditSubmit = async (e) => {
-  e.preventDefault();
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!editRecord.Id) {
-    toast.error("Record ID is missing!");
-    return;
-  }
-
-  // Check if anything changed
-  const original = data.find(r => r.Id === editRecord.Id);
-  const fieldsToCompare = [
-    'Date','PartName','MachineNumber','Capacity','Shift1','Shift2',
-    'TotalNumbers','ProductionAchieved','ProductionTarget','InspectedQuantity',
-    'SortedOK','SortedRejected','TotalSorted','SortingOut'
-  ];
-
-  const isChanged = fieldsToCompare.some(field => {
-    // Compare numbers as numbers
-    if (typeof original[field] === 'number') {
-      return Number(original[field]) !== Number(editRecord[field]);
+    if (!editRecord.Id) {
+      toast.error("Record ID is missing!");
+      return;
     }
-    return original[field] !== editRecord[field];
-  });
 
-  if (!isChanged) {
-    // No changes, just close modal
-    setShowEditModal(false);
-    toast.info("No changes made");
-    return;
-  }
+    // Check if anything changed
+    const original = data.find(r => r.Id === editRecord.Id);
+    const fieldsToCompare = [
+      'Date', 'PartName', 'MachineNumber', 'Capacity', 'Shift1', 'Shift2',
+      'TotalNumbers', 'ProductionAchieved', 'ProductionTarget', 'InspectedQuantity',
+      'SortedOK', 'SortedRejected', 'TotalSorted', 'SortingOut'
+    ];
 
-  try {
-    await axios.put('/api/prev-day-production', {
-      id: editRecord.Id,
-      date: editRecord.Date,
-      partName: editRecord.PartName,
-      machineNumber: editRecord.MachineNumber,
-      capacity: editRecord.Capacity,
-      shift1: editRecord.Shift1,
-      shift2: editRecord.Shift2,
-      totalNumbers: editRecord.TotalNumbers,
-      productionAchieved: editRecord.ProductionAchieved,
-      productionTarget: editRecord.ProductionTarget,
-      inspectedQuantity: editRecord.InspectedQuantity,
-      sortedOK: editRecord.SortedOK,
-      sortedRejected: editRecord.SortedRejected,
-      totalSorted: editRecord.TotalSorted,
-      sortingOut: editRecord.SortingOut
+    const isChanged = fieldsToCompare.some(field => {
+      // Compare numbers as numbers
+      if (typeof original[field] === 'number') {
+        return Number(original[field]) !== Number(editRecord[field]);
+      }
+      return original[field] !== editRecord[field];
     });
-    toast.success("Record updated successfully");
-    fetchData();
-    setShowEditModal(false);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update record");
-  }
-};
+
+    if (!isChanged) {
+      // No changes, just close modal
+      setShowEditModal(false);
+      toast.info("No changes made");
+      return;
+    }
+
+    try {
+      await axios.put('/api/prev-day-production', {
+        id: editRecord.Id,
+        date: editRecord.Date.split('T')[0],
+        partName: editRecord.PartName,
+        machineNumber: editRecord.MachineNumber,
+        capacity: editRecord.Capacity,
+        shift1: editRecord.Shift1,
+        shift2: editRecord.Shift2,
+        totalNumbers: editRecord.TotalNumbers,
+        productionAchieved: editRecord.ProductionAchieved,
+        productionTarget: editRecord.ProductionTarget,
+        inspectedQuantity: editRecord.InspectedQuantity,
+        sortedOK: editRecord.SortedOK,
+        sortedRejected: editRecord.SortedRejected,
+        totalSorted: editRecord.TotalSorted,
+        sortingOut: editRecord.SortingOut
+      });
+      toast.success("Record updated successfully");
+      fetchData();
+      setShowEditModal(false);
+      setData(prev => prev.map(r => r.Id === editRecord.Id ? editRecord : r));
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update record");
+    }
+  };
 
 
 
@@ -159,28 +160,28 @@ const handleEditSubmit = async (e) => {
           name="date"
           value={filters.date}
           onChange={handleFilterChange}
-          className="form-control frm-table-style"
+          className="form-control frm-input-style"
           style={{ maxWidth: '180px' }}
         />
         <select
           name="partName"
           value={filters.partName}
           onChange={handleFilterChange}
-          className="form-select frm-table-style"
+          className="form-select frm-input-style"
           style={{ maxWidth: '180px' }}
         >
           <option value="">All Parts</option>
           <option value="Motor">Motor</option>
           <option value="Bearing">Bearing</option>
         </select>
-        <button className="btn btn-outline-secondary" onClick={clearFilters}>
+        <button className="btn frm-input-style" onClick={clearFilters}>
           Clear All <IoMdCloseCircleOutline />
         </button>
       </div>
 
       {/* Table */}
-      <div className="table-scroll-wrapper over-with-hv">
-        <table className="table table-bordered">
+      <div className="table-responsive over-with-hv">
+        <table className="table table-bordered text-center">
           <thead className="table-primary">
             <tr>
               <th>Date</th>
@@ -227,7 +228,7 @@ const handleEditSubmit = async (e) => {
                   <td>{r.SortingOut}</td>
                   <td>
                     <button
-                      className="btn btn-sm btn-warning"
+                      className="btn btn-sm btn-edit"
                       onClick={() => openEditModal(r)}
                     >
                       Edit
@@ -252,7 +253,7 @@ const handleEditSubmit = async (e) => {
 
       {/* Delete Modal */}
       {showDeleteModal && (
-        <div className="modal fade show d-block" tabIndex="-1">
+        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
@@ -273,163 +274,177 @@ const handleEditSubmit = async (e) => {
 
       {/* Edit Modal */}
       {showEditModal && editRecord && (
-        <div className="modal fade show d-block" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered modal-xl">
-            <div className="modal-content">
-              <form onSubmit={handleEditSubmit}>
-                <div className="modal-header">
-                  <h5 className="modal-title">Edit Record</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowEditModal(false)}></button>
-                </div>
-                <div className="modal-body row g-3">
-                  {/* Example fields */}
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Part Name</label>
-                    <select
-                      className="form-select frm-input-style"
-                      value={editRecord.PartName}
-                      onChange={e => handleEditChange('PartName', e.target.value)}
-                    >
-                      <option value="">Select Part</option>
-                      <option value="Motor">Motor</option>
-                      <option value="Bearing">Bearing</option>
-                    </select>
+        <>
+          <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-dialog-centered modal-xl">
+              <div className="modal-content">
+                <form onSubmit={handleEditSubmit}>
+                  <div className="modal-header">
+                    <h5 className='fw-bold mt-2'>Edit Record</h5>
+                    <button type="button" className="btn-close" onClick={() => setShowEditModal(false)}></button>
                   </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Machine Number</label>
-                    <input
-                      type="text"
-                      className="form-control frm-input-style"
-                      value={editRecord.MachineNumber}
-                      onChange={e => handleEditChange('MachineNumber', e.target.value)}
-                    />
+                  <div className="modal-body row g-3">
+                    {/* Example fields */}
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Part Name</label>
+                      <select
+                        className="form-select frm-input-style"
+                        value={editRecord.PartName}
+                        onChange={e => handleEditChange('PartName', e.target.value)}
+                      >
+                        <option value="">Select Part</option>
+                        <option value="Motor">Motor</option>
+                        <option value="Bearing">Bearing</option>
+                      </select>
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Machine Number</label>
+                      <input
+                        type="text"
+                        className="form-control frm-input-style"
+                        value={editRecord.MachineNumber}
+                        onChange={e => handleEditChange('MachineNumber', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Capacity</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.Capacity}
+                        onChange={e => handleEditChange('Capacity', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">1st Shift</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.Shift1}
+                        onChange={e => handleEditChange('Shift1', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">2nd Shift</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.Shift2}
+                        onChange={e => handleEditChange('Shift2', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Total Numbers</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.TotalNumbers}
+                        disabled
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">% Production Achieved</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.ProductionAchieved}
+                        onChange={e => handleEditChange('ProductionAchieved', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Production Target</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.ProductionTarget}
+                        onChange={e => handleEditChange('ProductionTarget', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Inspected Quantity</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.InspectedQuantity}
+                        onChange={e => handleEditChange('InspectedQuantity', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Sorted (OK)</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.SortedOK}
+                        onChange={e => handleEditChange('SortedOK', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Sorted (Rejected)</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.SortedRejected}
+                        onChange={e => handleEditChange('SortedRejected', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Total Sorted</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.TotalSorted}
+                        disabled
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Sorting Out (Qty)</label>
+                      <input
+                        type="number"
+                        className="form-control frm-input-style"
+                        value={editRecord.SortingOut}
+                        onChange={e => handleEditChange('SortingOut', e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="form-label clr-label">Date</label>
+                      <input
+                        type="date"
+                        className="form-control frm-input-style"
+                        value={editRecord.Date.split('T')[0]} // to handle ISO string
+                        onChange={e => handleEditChange('Date', e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Capacity</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.Capacity}
-                      onChange={e => handleEditChange('Capacity', e.target.value)}
-                    />
+                  <div className="modal-footer">
+                    <div className="row">
+                      <div className="col-sm-4">
+                        <button
+                          type="button"
+                          className="btn btn-cancel me-3 px-3"
+                          onClick={() => setShowEditModal(false)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      <div className="col-sm-8">
+                        <button type="submit" className="btn btn-blue-clr px-3">
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
+
+
+
+
+
                   </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">1st Shift</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.Shift1}
-                      onChange={e => handleEditChange('Shift1', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">2nd Shift</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.Shift2}
-                      onChange={e => handleEditChange('Shift2', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Total Numbers</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.TotalNumbers}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">% Production Achieved</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.ProductionAchieved}
-                      onChange={e => handleEditChange('ProductionAchieved', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Production Target</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.ProductionTarget}
-                      onChange={e => handleEditChange('ProductionTarget', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Inspected Quantity</label>
-                    <input
-                      type="number"                     
-                      className="form-control frm-input-style"
-                      value={editRecord.InspectedQuantity}
-                      onChange={e => handleEditChange('InspectedQuantity', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Sorted (OK)</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.SortedOK}
-                      onChange={e => handleEditChange('SortedOK', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Sorted (Rejected)</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.SortedRejected}
-                      onChange={e => handleEditChange('SortedRejected', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Total Sorted</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.TotalSorted}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Sorting Out (Qty)</label>
-                    <input
-                      type="number"
-                      className="form-control frm-input-style"
-                      value={editRecord.SortingOut}
-                      onChange={e => handleEditChange('SortingOut', e.target.value)}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label clr-label">Date</label>
-                    <input
-                      type="date"
-                      className="form-control frm-input-style"
-                      value={editRecord.Date.split('T')[0]} // to handle ISO string
-                      onChange={e => handleEditChange('Date', e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setShowEditModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Save Changes
-                  </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
+
     </div>
   );
 };

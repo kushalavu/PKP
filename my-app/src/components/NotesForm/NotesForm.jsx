@@ -12,6 +12,7 @@ const NotesForm = () => {
     note: '',
   });
   const [refreshFlag, setRefreshFlag] = useState(false);
+  const [loading, setLoading] = useState(false); // <--- track loading state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +25,18 @@ const NotesForm = () => {
       toast.error('Date and Note are required!');
       return;
     }
+
+    setLoading(true); // disable button while request is in progress
     try {
-      await axios.post('/api/notes', formData);
-      toast.success('Note added successfully!');
+      const req = await axios.post('/api/notes', formData);
+      toast.success(req.data?.message || 'Note added successfully');
       setFormData({ date: '', forPlating: '', note: '' });
-      setRefreshFlag(prev => !prev); // trigger refresh
+      setRefreshFlag(prev => !prev); // trigger table refresh
     } catch (err) {
       console.error(err);
-      toast.error('Failed to add note');
+      toast.error(err.response?.data?.message || 'Failed to add note');
+    } finally {
+      setLoading(false); // re-enable button
     }
   };
 
@@ -53,6 +58,7 @@ const NotesForm = () => {
                 value={formData.date}
                 onChange={handleChange}
                 className="form-control frm-input-style"
+                disabled={loading} // optional: prevent editing while submitting
               />
             </div>
             <div className="col-md-6">
@@ -64,6 +70,7 @@ const NotesForm = () => {
                 onChange={handleChange}
                 className="form-control frm-input-style"
                 placeholder="(Optional - Ignore if unused)"
+                disabled={loading}
               />
             </div>
           </div>
@@ -77,10 +84,17 @@ const NotesForm = () => {
               value={formData.note}
               onChange={handleChange}
               placeholder="Enter notes..."
+              disabled={loading}
             ></textarea>
           </div>
 
-          <button type="submit" className="btn btn-blue-clr px-5">Submit</button>
+          <button
+            type="submit"
+            className="btn btn-blue-clr px-5"
+            disabled={loading} // <--- disable submit button
+          >
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
         </form>
       </div>
 

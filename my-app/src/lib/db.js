@@ -1,27 +1,24 @@
 // lib/db.js
-import sql from 'mssql';
-
-const config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
-  port: parseInt(process.env.DB_PORT || '1433'),
-  database: process.env.DB_DATABASE,
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  },
-};
+import mysql from "mysql2/promise";
 
 let pool;
 
 export async function getConnection() {
   if (!pool) {
     try {
-      pool = await sql.connect(config);
-      console.log('Connected to SQL Server');
+      pool = mysql.createPool({
+        host: process.env.DB_HOST,      // MySQL host (e.g. localhost)
+        user: process.env.DB_USER,      // MySQL username
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        port: parseInt(process.env.DB_PORT || "3306"), // default MySQL port
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+      });
+      console.log("Connected to MySQL");
     } catch (err) {
-      console.error('DB connection failed:', err.message);
+      console.error("DB connection failed:", err.message);
       throw err;
     }
   }

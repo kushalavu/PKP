@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConnection } from '@/lib/db';
+import { getConnection } from '@/lib/db'; // make sure this returns MySQL connection
 
 export async function POST(req) {
   try {
@@ -11,29 +11,17 @@ export async function POST(req) {
     } = body;
 
     const pool = await getConnection();
-    await pool.request()
-      .input('date', new Date(date))
-      .input('partName', partName)
-      .input('machineNumber', machineNumber)
-      .input('capacity', capacity)
-      .input('shift1', shift1)
-      .input('shift2', shift2)
-      .input('totalNumbers', totalNumbers)
-      .input('productionAchieved', productionAchieved)
-      .input('productionTarget', productionTarget)
-      .input('inspectedQuantity', inspectedQuantity)
-      .input('sortedOK', sortedOK)
-      .input('sortedRejected', sortedRejected)
-      .input('totalSorted', totalSorted)
-      .input('sortingOut', sortingOut)
-      .query(`INSERT INTO PrevDayProduction
+    const sql = `INSERT INTO PrevDayProduction 
       (Date, PartName, MachineNumber, Capacity, Shift1, Shift2, TotalNumbers,
         ProductionAchieved, ProductionTarget, InspectedQuantity, SortedOK,
         SortedRejected, TotalSorted, SortingOut)
-      VALUES
-      (@date,@partName,@machineNumber,@capacity,@shift1,@shift2,@totalNumbers,
-        @productionAchieved,@productionTarget,@inspectedQuantity,@sortedOK,
-        @sortedRejected,@totalSorted,@sortingOut)`);
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    await pool.execute(sql, [
+      date, partName, machineNumber, capacity, shift1, shift2, totalNumbers,
+      productionAchieved, productionTarget, inspectedQuantity, sortedOK,
+      sortedRejected, totalSorted, sortingOut
+    ]);
 
     return NextResponse.json({ message: 'Production submitted successfully' }, { status: 201 });
   } catch (err) {
@@ -47,17 +35,18 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get('date');
     const partName = searchParams.get('partName');
-    const osmNumber = searchParams.get('osmNumber'); // optional
+    const osmNumber = searchParams.get('osmNumber');
 
     const pool = await getConnection();
-    let query = `SELECT * FROM PrevDayProduction WHERE 1=1`;
-    if (date) query += ` AND CONVERT(date, Date)='${date}'`;
-    if (partName) query += ` AND PartName='${partName}'`;
-    if (osmNumber) query += ` AND MachineNumber='${osmNumber}'`;
-    query += ' ORDER BY Date DESC';
+    let sql = `SELECT * FROM PrevDayProduction WHERE 1=1`;
+    const params = [];
+    if (date) { sql += ' AND Date = ?'; params.push(date); }
+    if (partName) { sql += ' AND PartName = ?'; params.push(partName); }
+    if (osmNumber) { sql += ' AND MachineNumber = ?'; params.push(osmNumber); }
+    sql += ' ORDER BY Date DESC';
 
-    const result = await pool.request().query(query);
-    return NextResponse.json(result.recordset, { status: 200 });
+    const [rows] = await pool.execute(sql, params);
+    return NextResponse.json({ success: true, data: rows });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Server error', error: err.message }, { status: 500 });
@@ -76,37 +65,24 @@ export async function PUT(req) {
     if (!id) return NextResponse.json({ message: 'ID is required' }, { status: 400 });
 
     const pool = await getConnection();
-    await pool.request()
-      .input('id', id)
-      .input('date', date ? new Date(date) : null)
-      .input('partName', partName)
-      .input('machineNumber', machineNumber)
-      .input('capacity', parseInt(capacity))
-      .input('shift1', parseInt(shift1))
-      .input('shift2', parseInt(shift2))
-      .input('totalNumbers', parseInt(totalNumbers))
-      .input('productionAchieved', parseInt(productionAchieved))
-      .input('productionTarget', parseInt(productionTarget))
-      .input('inspectedQuantity', parseInt(inspectedQuantity))
-      .input('sortedOK', parseInt(sortedOK))
-      .input('sortedRejected', parseInt(sortedRejected))
-      .input('totalSorted', parseInt(totalSorted))
-      .input('sortingOut', sortingOut || '')
-      .query(`UPDATE PrevDayProduction SET 
-        Date=@date, PartName=@partName, MachineNumber=@machineNumber, Capacity=@capacity,
-        Shift1=@shift1, Shift2=@shift2, TotalNumbers=@totalNumbers,
-        ProductionAchieved=@productionAchieved, ProductionTarget=@productionTarget,
-        InspectedQuantity=@inspectedQuantity, SortedOK=@sortedOK, SortedRejected=@sortedRejected,
-        TotalSorted=@totalSorted, SortingOut=@sortingOut
-        WHERE Id=@id`);
+    const sql = `UPDATE PrevDayProduction SET 
+      Date=?, PartName=?, MachineNumber=?, Capacity=?, Shift1=?, Shift2=?,
+      TotalNumbers=?, ProductionAchieved=?, ProductionTarget=?, InspectedQuantity=?,
+      SortedOK=?, SortedRejected=?, TotalSorted=?, SortingOut=?
+      WHERE Id=?`;
 
-    return NextResponse.json({ message: 'Record updated successfully' }, { status: 200 });
+    await pool.execute(sql, [
+      date, partName, machineNumber, capacity, shift1, shift2, totalNumbers,
+      productionAchieved, productionTarget, inspectedQuantity, sortedOK,
+      sortedRejected, totalSorted, sortingOut, id
+    ]);
+
+    return NextResponse.json({ message: 'Record updated successfully' });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Server error', error: err.message }, { status: 500 });
   }
 }
-
 
 export async function DELETE(req) {
   try {
@@ -115,11 +91,9 @@ export async function DELETE(req) {
     if (!id) return NextResponse.json({ message: 'ID is required' }, { status: 400 });
 
     const pool = await getConnection();
-    await pool.request()
-      .input('id', id)
-      .query('DELETE FROM PrevDayProduction WHERE Id=@id');
+    await pool.execute(`DELETE FROM PrevDayProduction WHERE Id=?`, [id]);
 
-    return NextResponse.json({ message: 'Record deleted successfully' }, { status: 200 });
+    return NextResponse.json({ message: 'Record deleted successfully' });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Server error', error: err.message }, { status: 500 });

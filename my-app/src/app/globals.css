@@ -2,16 +2,14 @@
     background: linear-gradient(180deg, #151E58 0%, #28357A 100%);
     width: 250px;
     font-size: 14px;
-    height: 100vh;     /* stays within viewport */
-  overflow-y: auto;      /* adds vertical scroll when needed */
-  overflow-x: hidden; 
+    height: 100%;
   }
 .sticky-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1050;
+  z-index: 999;
   background: #151E58;
 }
 
@@ -24,7 +22,19 @@
     background: #4256D0;
     color: #FFFFFF;
 }
-
+.hover-css-sidebar:hover {
+    background: #4256D0;
+    color: #FFFFFF;
+}
+.hover-css-sidebar:focus {
+    background: #4256D0;
+    color: #FFFFFF;
+}
+.hover-css-sidebar:active {
+    background: #4256D0;
+    color: #FFFFFF;
+    border-color: var(--bs-btn-active-border-color);
+}
 .nav-link.nav-cus:focus {
     color: #FFFFFF;
 }
@@ -273,12 +283,12 @@ body{
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 9998;
+  z-index: 998;
 }
 
 /* Your mobile menu stays above backdrop */
 .humburger-small {
-  z-index: 9999;
+  z-index: 998;
   position: fixed;
   top: 67px;
   left: 0;
@@ -345,23 +355,24 @@ select:focus {
     color: #FFFFFF;
 }
 .mobile-header {
-  z-index: 9999;
+  z-index: 999;
 }
+.table-responsive {
+     /* full width */
+     width: auto;
+  max-width: 100vw;   /* prevent overflow outside viewport */
+  overflow-x: auto;
+}
+
   .table-scroll-wrapper thead th {
     position: sticky;
     top: 0;
     background-color: #e9ecef; /* Bootstrap's table-primary light */
     z-index: 10;
   }
-  .table-scroll-wrapper {
-     max-height: 300px;
-     overflow-y: auto;
-  }
+
 @media (max-width: 991.98px) {
-  .responsive-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-  }
+ 
 
   .responsive-table {
     width: 100%;
@@ -375,11 +386,8 @@ select:focus {
     background-color: #e9ecef;
   }
 
-  .responsive-table-body-wrapper {
-    max-height: 300px;
-    overflow-y: auto;
-    display: block;
-  }
+
+
 
   .responsive-table thead,
   .responsive-table tbody,
@@ -402,24 +410,12 @@ select:focus {
     width: 200px;
     height: 200px;
   }
-    .table-scroll-wrapper {
-    max-height: 300px; 
-    max-width: 580px; 
-    overflow-y: auto;
-    overflow-x: auto;
-  }
 }
 
 @media (max-width: 576px) {
   .role-image {
     width: 150px;
     height: 150px;
-  }
-      .table-scroll-wrapper {
-    max-height: 300px; 
-    max-width: 450px;  
-    overflow-y: auto;
-    overflow-x: auto;
   }
 }
 .right-img-login {
@@ -495,4 +491,21 @@ select:focus {
     --bs-btn-disabled-bg: none;
     --bs-btn-disabled-border-color: none !important;
     --bs-gradient: none;
+}
+.btn.btn-edit{
+    background: #4260EA;
+    border: 1px solid #000000;
+    font-weight: 600;
+    border-radius: 4px;
+    color: #FFFFFF;
+    padding: 5px;
+    width: 100%;
+}
+.modal-backdrop.blur {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.sidebar-overflow{
+  height: 100vh;
+bottom: auto;
+  overflow-y: auto;
 }

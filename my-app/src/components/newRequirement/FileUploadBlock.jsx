@@ -1,10 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import { FaFileCirclePlus } from "react-icons/fa6";
-import { FaPlusCircle } from "react-icons/fa";
-
 
 const FileUploadBlock = ({ file, setFile, setFileBase64 }) => {
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -20,6 +19,10 @@ const FileUploadBlock = ({ file, setFile, setFileBase64 }) => {
     }
   };
 
+  const openFilePicker = () => {
+    fileInputRef.current.click(); // programmatically open file picker
+  };
+
   return (
     <>
       <div className="row p-4 bg-white rounded">
@@ -30,40 +33,51 @@ const FileUploadBlock = ({ file, setFile, setFileBase64 }) => {
           <small className="text-muted fw-semibold">or drag and drop it here</small>
           <input
             type="file"
+            ref={fileInputRef}
             className="position-absolute w-100 h-100 top-0 start-0 opacity-0"
             onChange={handleFileChange}
           />
         </div>
 
-        <div className="col-sm-12 mb-3 mt-4">
-          <div className='row'>
-            <div className="col-xxl-9 col-xl-6 col-lg-4 col-md-7 col-5">
-              <small className="text-muted init-nav-co">Need help importing files?</small>
-            </div>
+ <div className="col-12 mb-3 mt-4">
+  <div className="d-flex flex-wrap align-items-center justify-content-between">
+    
+    {/* Left text */}
+    <div className="mb-2 mb-sm-0">
+      <small className="text-muted init-nav-co">Need help importing files?</small>
+    </div>
 
-            <div className='col-auto gx-0'>
-              <button
-                type="button"
-                className="btn btn-cancel me-3 px-3"
-                onClick={() => {
-                  setFile(null);
-                  setFileBase64('');
-                }}
-              >
-                Cancel
-              </button>
-            </div>
+    {/* Buttons */}
+    <div className="d-flex gap-2">
+      <button
+        type="button"
+        className="btn btn-cancel px-3"
+        onClick={() => {
+          setFile(null);
+          setFileBase64('');
+        }}
+      >
+        Cancel
+      </button>
 
-            <div className='col-auto gx-0'>
-              <button type="button" className="btn btn-blue-clr px-3">Import</button>
-            </div>
-          </div>
-        </div>
+      <button
+        type="button"
+        className="btn btn-blue-clr px-3"
+        onClick={openFilePicker}
+      >
+        Import
+      </button>
+    </div>
+
+  </div>
+</div>
+
       </div>
+      {file && (
+        <div className='p-4 bg-white rounded mt-4'>
+          <div className="row">
+            <h5 className="fw-bold mb-3">Preview</h5>
 
-      <div className='p-4 bg-white rounded mt-4'>
-        <div className="row g-5">
-          {file && (
             <div className="col-lg-auto col-3 me-3 object-fit-contain">
               <img
                 src={URL.createObjectURL(file)}
@@ -72,14 +86,10 @@ const FileUploadBlock = ({ file, setFile, setFileBase64 }) => {
                 height={100}
               />
             </div>
-          )}
-          <div className="col-lg-auto col-md-3 col-4">
-            <div className="bg-light border d-flex align-items-center justify-content-center p-4 mt-lg-0 mt-2">
-              <FaPlusCircle className='cus-upload-icon-plus'/>
-            </div>
+
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

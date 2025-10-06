@@ -76,8 +76,8 @@ const NewRequirementForm = () => {
   };
 
   return (
-    <div className="row">
-      <div className="col-xxl-4 col-lg-6 col-12 mb-4">
+    <>
+      <div className="col-xxl-4 col-lg-6 col-md-7 col-12 mb-4">
         <div className="p-4 rounded form-bg main-wrapper">
           <h5 className="fw-bold">New Requirement</h5>
           <p className="text-muted small init-nav-co">
@@ -116,7 +116,7 @@ const NewRequirementForm = () => {
 
             {/* Raw Material */}
             <div className="mb-3">
-              <label className="form-label clr-label">Raw Material</label>
+              <label className="form-label clr-label">Raw Material (Metal)</label>
               <input
                 type="text"
                 name="rawMaterial"
@@ -129,7 +129,7 @@ const NewRequirementForm = () => {
 
             {/* Raw Material Size */}
             <div className="mb-3">
-              <label className="form-label clr-label">Raw Material Size</label>
+              <label className="form-label clr-label">Raw Material Size (dimension of the material)</label>
               <input
                 type="text"
                 name="rawMaterialSize"
@@ -155,7 +155,7 @@ const NewRequirementForm = () => {
 
             {/* Raw Material Drawing */}
             <div className="mb-3">
-              <label className="form-label clr-label">Raw Material Drawing</label>
+              <label className="form-label clr-label">Raw Material Drawing No.</label>
               <input
                 type="text"
                 name="rawMaterialDrawing"
@@ -178,11 +178,11 @@ const NewRequirementForm = () => {
         </div>
       </div>
 
-      <div className="col-xxl-8 col-lg-6 col-12">
+      <div className="col-xxl-8 col-lg-6 col-md-5 col-12">
         <FileUploadBlock file={file} setFile={setFile} setFileBase64={setFileBase64} />
         {errors.file && <p className="text-danger mt-2">{errors.file}</p>}
       </div>
-    </div>
+  </>
   );
 };
 

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from "next-auth/react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -21,6 +22,34 @@ const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
 const [role, setRole] = useState(null);
+const [timeLeft, setTimeLeft] = useState(0);
+
+const { data: session } = useSession();
+useEffect(() => {
+  if (!session?.expires) return;
+
+  const expiryTime = new Date(session.expires).getTime(); // in ms
+
+  const interval = setInterval(() => {
+    const now = Date.now();
+    const remaining = Math.floor((expiryTime - now) / 1000); // seconds
+    setTimeLeft(remaining);
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      alert("Your session has expired. Redirecting to login.");
+      signOut({ callbackUrl: "/login" });
+    }
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [session]);
+const formatTime = (seconds) => {
+  const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
+  const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
+  const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${h}:${m}:${s}`;
+};
   useEffect(() => {
     const cookieRole = Cookies.get('userRole');
     if (cookieRole) {
@@ -30,11 +59,12 @@ const [role, setRole] = useState(null);
       console.warn('No role cookie found');
     }
   }, []);
-  const handleLogout = () => {
-    localStorage.clear();
-    setShowModal(false);
-    router.push('/');
-  };
+const handleLogout = async () => {
+  await signOut({
+    callbackUrl: "/login" // after signout go here
+  });
+};
+
 
     const menuItemsAdmin = [
       { label: 'New Requirement', icon: <FiFilePlus />, href: '/new-requirement-admin' },
@@ -87,24 +117,31 @@ const [role, setRole] = useState(null);
       <nav className="custom-sidebar-2 text-white border-bottom p-3 d-lg-block d-none">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-xxl-3 col-lg-5 col-6">
-              <h5 className="navbar-brand text-white mt-3">{role === 'admin' ? 'Adam Let’s check your inventory today' : 'Lokhi Let’s check your inventory today'}</h5>
+            <div className="col-auto">
+              <h5 className="navbar-brand text-white mt-3">{role === 'admin' ? 'Let’s check your inventory' : 'Let’s check your inventory'}</h5>
             </div>
-            <div className="col-xxl-7 col-lg-5 col-4">
+            {/* <div className="col-xxl-7 col-lg-5 col-4">
               <input className="form-control me-5" type="search" placeholder="Search..." />
-            </div>
-            <div className="col-xxl-2 col-lg-2 d-flex align-items-center justify-content-end">
-           <Link href="/profile" className='text-decoration-none text-white'>
-  <Image
-    src="/assets/user.png"
-    alt="User Profile"
-    width={40}
-    height={40}
-    className="rounded-circle me-3"
-    style={{ cursor: 'pointer' }}
-  />
-              <span>{role === 'admin' ? 'Admin' : 'Manager'}</span></Link>
-            </div>
+            </div> */}
+           <div className="col-auto d-flex align-items-center ms-auto">
+  <Link href="/profile" className='text-decoration-none text-white'>
+    <Image
+      src="/assets/user.png"
+      alt="User Profile"
+      width={40}
+      height={40}
+      className="rounded-circle me-2"
+      style={{ cursor: 'pointer' }}
+    />
+    <span>{role === 'admin' ? 'Admin' : 'Manager'}</span>
+  </Link>
+  {timeLeft > 0 && (
+    <span className="ms-3" style={{ fontWeight: "bold" }}>
+      {formatTime(timeLeft)}
+    </span>
+  )}
+</div>
+
           </div>
         </div>
       </nav>

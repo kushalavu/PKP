@@ -3,7 +3,12 @@ import NewRequirementTable from "@/components/NewRequirementTableAdmin/NewRequir
 
 const page = () => {
   return (
-<NewRequirementTable/>
+    <>
+     <div className="container-fluid form-complete-bg p-4">
+      <NewRequirementTable/>
+     </div>
+    </>
+
   )
 }
 
