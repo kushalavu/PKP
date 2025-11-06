@@ -12,7 +12,10 @@ const page = () => {
           }, []);
   return (
       <>
-{loading ? <CommonSkeletonLoader /> : <WorkInProgressForm />}
+       <div className="container-fluid form-complete-bg p-4">
+        {loading ? <CommonSkeletonLoader /> : <WorkInProgressForm />}
+       </div>
+
   </> 
   )
 }

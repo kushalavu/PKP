@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-loading-skeleton/dist/skeleton.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import "./globals.css";
 
 const poppins = Poppins({

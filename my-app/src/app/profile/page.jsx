@@ -3,7 +3,10 @@ import ProfileSetting from '@/components/profileAdminandManger/profile'
 
 const page = () => {
   return (
-<ProfileSetting/>
+      <div className="container-fluid form-complete-bg p-4">
+        <ProfileSetting/>
+      </div>
+
   )
 }
 

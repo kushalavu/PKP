@@ -1,42 +1,105 @@
 import { NextResponse } from 'next/server';
-import { getConnection } from '@/lib/db'; // MySQL connection pool
+import { getConnection } from '@/lib/db';
 
-// GET all notes
-export async function GET() {
+export async function GET(request) {
   try {
-    const pool = await getConnection();
-    const [rows] = await pool.query('SELECT * FROM Notes ORDER BY Date DESC');
+    const connection = await getConnection();
+    const { searchParams } = new URL(request.url);
 
-    if (rows.length === 0) {
-      return NextResponse.json({ success: false, message: 'No notes found', data: [] });
+    const date = searchParams.get("date");
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    // 🔹 Keep sorting by real date, not formatted string
+    let query = `
+      SELECT 
+        Id, 
+        DATE_FORMAT(Date, '%d-%m-%Y') AS Date, 
+        ForPlating, 
+        Note 
+      FROM Notes 
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (date) {
+      query += " AND Date = ?";
+      params.push(date);
     }
 
-    return NextResponse.json({ success: true, data: rows });
+    // 🔹 ORDER by actual date column (not formatted)
+    query += ` ORDER BY Notes.Date DESC LIMIT ${limit} OFFSET ${offset}`;
+    const [rows] = await connection.execute(query, params);
+
+    // Pagination count
+    let countQuery = "SELECT COUNT(*) as total FROM Notes WHERE 1=1";
+    const countParams = [];
+    if (date) {
+      countQuery += " AND Date = ?";
+      countParams.push(date);
+    }
+    const [countResult] = await connection.execute(countQuery, countParams);
+    const total = countResult[0].total;
+
+    return NextResponse.json({
+      success: true,
+      data: rows,
+      total,
+      pages: Math.ceil(total / limit),
+      page
+    });
+
   } catch (err) {
-    console.error('GET Notes Error:', err);
-    return NextResponse.json({ success: false, message: err.message, data: [] }, { status: 500 });
+    console.error("GET Notes Error:", err);
+    return NextResponse.json(
+      { success: false, message: err.message, data: [] },
+      { status: 500 }
+    );
   }
 }
+
 
 // POST - create new note
 export async function POST(request) {
   try {
     const body = await request.json();
+
     if (!body.date || !body.note) {
-      return NextResponse.json({ success: false, message: 'Date and Note are required' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: 'Date and Note are required' },
+        { status: 400 }
+      );
     }
 
+    // Ensure date is in "YYYY-MM-DD" format
+    const dateOnly = body.date.split('T')[0];
+
     const pool = await getConnection();
+
+    // Insert note into DB
     const [result] = await pool.execute(
       'INSERT INTO Notes (Date, ForPlating, Note) VALUES (?, ?, ?)',
-      [body.date, body.forPlating || '', body.note]
+      [dateOnly, body.forPlating || '', body.note]
     );
 
-    const [newRow] = await pool.query('SELECT * FROM Notes WHERE Id = ?', [result.insertId]);
-    return NextResponse.json({ success: true, message: 'Note created successfully', data: newRow[0] });
+    // Fetch the newly created note, with Date formatted as string
+    const [newRow] = await pool.query(
+      'SELECT Id, DATE_FORMAT(Date, "%Y-%m-%d") AS Date, ForPlating, Note FROM Notes WHERE Id = ?',
+      [result.insertId]
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: 'Note created successfully',
+      data: newRow[0], // Date will now be "YYYY-MM-DD"
+    });
   } catch (err) {
     console.error('POST Notes Error:', err);
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: err.message },
+      { status: 500 }
+    );
   }
 }
 

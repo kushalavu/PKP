@@ -3,7 +3,8 @@ import Notes from "@/components/notesadmin/notesadmin"
 
 const page = () => {
   return (
-<Notes/>
+      <div className="container-fluid form-complete-bg p-4"><Notes/></div>
+
   )
 }
 

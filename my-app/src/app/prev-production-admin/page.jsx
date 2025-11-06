@@ -3,7 +3,10 @@ import PrevDayProductionAdmin from "@/components/PrevDayProductionAdmin/PrevDayP
 
 const page = () => {
   return (
+    <div className="container-fluid form-complete-bg p-4">
 <PrevDayProductionAdmin/>
+    </div>
+
   )
 }
 

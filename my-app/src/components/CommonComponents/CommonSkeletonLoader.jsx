@@ -19,7 +19,7 @@ const CommonSkeletonLoader = () => {
               <Skeleton height={25} />
               <Skeleton height={10} />
             </div>
-            <hr />
+            <hr className="mb-3 hr-sty-all" />
             <div className="col-md-4">
               <Skeleton height={35} className='shadow-sm'/>
             </div>

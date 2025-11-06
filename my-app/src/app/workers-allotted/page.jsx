@@ -12,7 +12,9 @@ const page = () => {
             }, []);
   return (
       <>
-{loading ? <CommonSkeletonLoader /> : <PreDayWorkersForm />}
+          <div className="container-fluid form-complete-bg p-4">
+            {loading ? <CommonSkeletonLoader /> : <PreDayWorkersForm />}
+          </div>
   </> 
   )
 }

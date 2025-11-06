@@ -3,7 +3,10 @@ import Workinprogress from '@/components/workinprogressadmin/workinprogressadmin
 
 const page = () => {
   return (
-<Workinprogress/>
+       <div className="container-fluid form-complete-bg p-4">
+        <Workinprogress/>
+       </div>
+
   )
 }
 

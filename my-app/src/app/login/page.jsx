@@ -69,9 +69,11 @@ const Login = () => {
         await new Promise((resolve) => setTimeout(resolve, 200));
 
         if (roleFromSession === 'admin') {
-          router.push('/new-requirement-admin');
+          // router.push('/new-requirement-admin');
+           window.location.href = '/new-requirement-admin';
         } else {
-          router.push('/new-requirement');
+          // router.push('/new-requirement');
+           window.location.href = '/new-requirement';
         }
       }
     } catch (err) {
@@ -231,7 +233,7 @@ const handleResetPassword = async () => {
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                      <div
+                      {/* <div
                         className="d-flex align-items-center"
                         onClick={() => setRemember(!remember)}
                         style={{ cursor: 'pointer' }}
@@ -242,7 +244,7 @@ const handleResetPassword = async () => {
                           <MdRadioButtonUnchecked size={20} className="text-secondary me-2" />
                         )}
                         <span>Remember me</span>
-                      </div>
+                      </div> */}
                       <button
                         type="button"
                         className="btn fw-semibold btn-link text-danger text-decoration-none p-0"

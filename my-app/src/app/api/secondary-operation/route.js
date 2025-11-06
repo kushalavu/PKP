@@ -5,23 +5,22 @@ import { getConnection } from '@/lib/db'; // make sure this returns MySQL connec
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { date, partName, coreCSKDone, coreVisualDone, magneticDrill, magneticVisual, pivotPin } = body;
+    const { date, coreCSKDone, coreVisualDone, magneticDrill, magneticVisual, pivotPin } = body;
 
-    if (!date || !partName) {
-      return NextResponse.json({ message: "Date & Part Name required" }, { status: 400 });
+    if (!date) {
+      return NextResponse.json({ message: "Date required" }, { status: 400 });
     }
 
     const conn = await getConnection();
 
     const sql = `
       INSERT INTO SecondaryOperation
-      (Date, PartName, CoreCSKDone, CoreVisualDone, MagneticDrill, MagneticVisual, PivotPin)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      (Date, CoreCSKDone, CoreVisualDone, MagneticDrill, MagneticVisual, PivotPin)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     await conn.execute(sql, [
       date,
-      partName,
       coreCSKDone || 0,
       coreVisualDone || 0,
       magneticDrill || 0,
@@ -37,12 +36,22 @@ export async function POST(req) {
   }
 }
 
-// GET - fetch records
+// Utility: Check if record is within 30 days
+function isWithin30Days(dateStr) {
+  const recordDate = new Date(dateStr);
+  const now = new Date();
+  const diff = (now - recordDate) / (1000 * 60 * 60 * 24);
+  return diff <= 30;
+}
+
+// ✅ GET (with pagination)
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date");
-    const partName = searchParams.get("partName");
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const offset = (page - 1) * limit;
 
     const conn = await getConnection();
 
@@ -50,49 +59,53 @@ export async function GET(req) {
     const params = [];
 
     if (date) {
-      sql += " AND Date = ?";
+      sql += " AND DATE(Date) = ?";
       params.push(date);
     }
 
-    if (partName) {
-      sql += " AND PartName LIKE ?";
-      params.push(`%${partName}%`);
-    }
+    // ✅ Inject limit/offset directly — no placeholders
+    sql += ` ORDER BY Date DESC LIMIT ${limit} OFFSET ${offset}`;
 
     const [rows] = await conn.execute(sql, params);
 
-    return NextResponse.json(rows);
+    const [[{ total }]] = await conn.execute(
+      "SELECT COUNT(*) AS total FROM SecondaryOperation"
+    );
+
+    const totalPages = Math.ceil(total / limit) || 1;
+
+    return NextResponse.json({ success: true, data: rows, totalPages });
   } catch (err) {
     console.error("GET error:", err);
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Failed to fetch" }, { status: 500 });
   }
 }
 
-// PUT - update record
+// ✅ PUT (Update record, restrict >30 days)
 export async function PUT(req) {
   try {
     const body = await req.json();
-    const { id, date, partName, coreCSKDone, coreVisualDone, magneticDrill, magneticVisual, pivotPin } = body;
+    const { id, date, coreCSKDone, coreVisualDone, magneticDrill, magneticVisual, pivotPin } = body;
 
-    if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+    if (!id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
+
+    if (!isWithin30Days(date)) {
+      return NextResponse.json(
+        { success: false, message: "Edit not allowed after 30 days." },
+        { status: 403 }
+      );
+    }
 
     const conn = await getConnection();
 
     const sql = `
       UPDATE SecondaryOperation SET
-        Date = ?,
-        PartName = ?,
-        CoreCSKDone = ?,
-        CoreVisualDone = ?,
-        MagneticDrill = ?,
-        MagneticVisual = ?,
-        PivotPin = ?
+        CoreCSKDone = ?, CoreVisualDone = ?,
+        MagneticDrill = ?, MagneticVisual = ?, PivotPin = ?
       WHERE Id = ?
     `;
 
     await conn.execute(sql, [
-      date,
-      partName,
       coreCSKDone || 0,
       coreVisualDone || 0,
       magneticDrill || 0,
@@ -101,27 +114,39 @@ export async function PUT(req) {
       id
     ]);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: "Record updated successfully" });
   } catch (err) {
     console.error("PUT error:", err);
-    return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Failed to update" }, { status: 500 });
   }
 }
 
-// DELETE - delete record
+// ✅ DELETE (Delete record, restrict >30 days)
 export async function DELETE(req) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
-    if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+    if (!id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
 
     const conn = await getConnection();
-    await conn.execute("DELETE FROM SecondaryOperation WHERE Id = ?", [id]);
 
-    return NextResponse.json({ success: true });
+    const [[record]] = await conn.execute("SELECT Date FROM SecondaryOperation WHERE Id = ?", [id]);
+    if (!record)
+      return NextResponse.json({ success: false, message: "Record not found" }, { status: 404 });
+
+    if (!isWithin30Days(record.Date)) {
+      return NextResponse.json(
+        { success: false, message: "Delete not allowed after 30 days." },
+        { status: 403 }
+      );
+    }
+
+    await conn.execute("DELETE FROM SecondaryOperation WHERE Id = ?", [id]);
+    return NextResponse.json({ success: true, message: "Record deleted successfully" });
   } catch (err) {
     console.error("DELETE error:", err);
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Failed to delete" }, { status: 500 });
   }
 }
+

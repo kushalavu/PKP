@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NotesTable from './NotesTable';
 
@@ -12,8 +12,12 @@ const NotesForm = () => {
     note: '',
   });
   const [refreshFlag, setRefreshFlag] = useState(false);
-  const [loading, setLoading] = useState(false); // <--- track loading state
-
+  const [loading, setLoading] = useState(false);
+const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
+const dd = String(today.getDate()).padStart(2, '0');
+const todayLocal = `${yyyy}-${mm}-${dd}`;
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -25,24 +29,30 @@ const NotesForm = () => {
       toast.error('Date and Note are required!');
       return;
     }
-
-    setLoading(true); // disable button while request is in progress
+    setLoading(true);
     try {
-      const req = await axios.post('/api/notes', formData);
-      toast.success(req.data?.message || 'Note added successfully');
+      // ✅ Send date as plain string "YYYY-MM-DD"
+      await axios.post('/api/notes', {
+        date: formData.date,
+        forPlating: formData.forPlating || '',
+        note: formData.note,
+      });
+
+      toast.success('Note added successfully');
       setFormData({ date: '', forPlating: '', note: '' });
-      setRefreshFlag(prev => !prev); // trigger table refresh
+      setRefreshFlag(prev => !prev); // refresh table
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Failed to add note');
     } finally {
-      setLoading(false); // re-enable button
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container-fluid mt-4">
-      <div className="card p-4">
+    <>
+      <ToastContainer />
+      <div className="row">
         <h5 className='fw-bold mt-2'>Notes</h5>
         <p className="text-muted d-block mb-3">
           Fill out the form to capture important updates from today’s meeting
@@ -58,11 +68,12 @@ const NotesForm = () => {
                 value={formData.date}
                 onChange={handleChange}
                 className="form-control frm-input-style"
-                disabled={loading} // optional: prevent editing while submitting
+                max={todayLocal}
+                disabled={loading}
               />
             </div>
             <div className="col-md-6">
-              <label className="form-label clr-label">Progress</label>
+              <label className="form-label clr-label">Subject</label>
               <input
                 type="text"
                 name="forPlating"
@@ -91,7 +102,7 @@ const NotesForm = () => {
           <button
             type="submit"
             className="btn btn-blue-clr px-5"
-            disabled={loading} // <--- disable submit button
+            disabled={loading}
           >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
@@ -103,7 +114,7 @@ const NotesForm = () => {
           <NotesTable refreshFlag={refreshFlag} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

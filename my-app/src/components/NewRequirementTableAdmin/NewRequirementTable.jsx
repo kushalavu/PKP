@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Dropdown, DropdownButton, Row, Col, Spinner, Pagination } from 'react-bootstrap';
+import { Table, Button, Dropdown, DropdownButton, Row, Col, Placeholder, Pagination, Form, Spinner } from 'react-bootstrap';
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 export default function NewRequirementTable() {
@@ -9,22 +9,42 @@ export default function NewRequirementTable() {
   const [loading, setLoading] = useState(false);
 
   // Filters
+  const [filterDate, setFilterDate] = useState('');
   const [filterPartName, setFilterPartName] = useState('');
   const [filterMaterial, setFilterMaterial] = useState('');
   const [filterDrawing, setFilterDrawing] = useState('');
   const [filterIndustry, setFilterIndustry] = useState('');
 
-  const [filterOptions, setFilterOptions] = useState({ parts: [], materials: [], drawings: [], industries: [] });
+  const [filterOptions, setFilterOptions] = useState({
+    parts: [],
+    materials: [],
+    drawings: [],
+    industries: []
+  });
 
   const [activePage, setActivePage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch all data
+  // Fetch table data
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/new-requirement');
-      if (res.data.success) setData(res.data.data || []);
+      const params = {
+        date: filterDate || undefined,
+        part: filterPartName || undefined,
+        material: filterMaterial || undefined,
+        drawing: filterDrawing || undefined,
+        industry: filterIndustry || undefined,
+        page: activePage,
+        limit: itemsPerPage
+      };
+
+      const res = await axios.get('/api/new-requirement', { params });
+      if (res.data.success) {
+        setData(res.data.data);
+        setTotalPages(res.data.pages || 1);
+      }
     } catch (err) {
       console.error(err);
       setData([]);
@@ -33,7 +53,7 @@ export default function NewRequirementTable() {
     }
   };
 
-  // Fetch filter options
+  // Fetch filter dropdown options
   const fetchFilterOptions = async () => {
     try {
       const res = await axios.get('/api/new-requirement-filter');
@@ -45,36 +65,54 @@ export default function NewRequirementTable() {
 
   useEffect(() => {
     fetchData();
+  }, [filterDate, filterPartName, filterMaterial, filterDrawing, filterIndustry, activePage]);
+
+  useEffect(() => {
     fetchFilterOptions();
   }, []);
 
-  // Apply filters on client-side (optional: can send to backend if needed)
-  const filteredData = data.filter(item => {
-    return (
-      (!filterPartName || item.PartName === filterPartName) &&
-      (!filterMaterial || item.RawMaterial === filterMaterial) &&
-      (!filterDrawing || item.RawMaterialDrawing === filterDrawing) &&
-      (!filterIndustry || item.RawMaterialCompany === filterIndustry)
-    );
-  });
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const paginatedData = filteredData.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
-
   const handleClearFilters = () => {
+    setFilterDate('');
     setFilterPartName('');
     setFilterMaterial('');
     setFilterDrawing('');
     setFilterIndustry('');
   };
 
+  const renderSkeleton = () =>
+    Array.from({ length: 10 }).map((_, idx) => (
+      <tr key={idx}>
+        {Array.from({ length: 8 }).map((_, j) => (
+          <td key={j}>
+            <Placeholder as="span" animation="glow" className="light-placeholder">
+              <Placeholder xs={8}/>
+            </Placeholder>
+          </td>
+        ))}
+      </tr>
+    ));
+
   return (
     <>
-      <h5 className="fw-bold mb-3">New Requirement List</h5>
-
       {/* Filters */}
-      <Row className="g-2 mb-3 align-items-center">
-        <Col xs="auto" >
+      <Row className="g-2 mb-4 align-items-center">
+        <Col xxl={6} xl={12} xs={12}>
+          <h5 className="fw-bold mb-3">New Requirement List</h5>
+        </Col>
+
+        <Col xs="auto">
+          <Form.Control
+            type="date"
+            value={filterDate}
+            className='date-filed-admin'
+            onChange={(e) => {
+              setFilterDate(e.target.value);
+              setActivePage(1);
+            }}
+          />
+        </Col>
+
+        <Col xs="auto">
           <DropdownButton title={filterPartName || "Part Name"} variant="outline-secondary">
             <Dropdown.Item onClick={() => setFilterPartName('')}>All</Dropdown.Item>
             {filterOptions.parts.map((p, idx) => (
@@ -117,60 +155,81 @@ export default function NewRequirementTable() {
         </Col>
       </Row>
 
+      <hr className="mb-3 hr-sty-all" />
+
       {/* Table */}
-      <div className="table-responsive">
-        {loading ? (
-          <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
-            <Spinner animation="border" variant="primary" />
-          </div>
-        ) : (
-          <Table bordered hover className="text-center">
-            <thead className="table-primary">
-              <tr>
-                <th>Date</th>
-                <th>Part Name</th>
-                <th>Raw Material</th>
-                <th>Raw Material Size</th>
-                <th>Industry</th>
-                <th>Drawing</th>
-                <th>File Upload</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.length ? (
-                paginatedData.map(item => (
-                  <tr key={item.Id}>
-                    <td>{new Date(item.Date).toLocaleDateString()}</td>
-                    <td>{item.PartName}</td>
-                    <td>{item.RawMaterial}</td>
-                    <td>{item.RawMaterialSize}</td>
-                    <td>{item.RawMaterialCompany}</td>
-                    <td>{item.RawMaterialDrawing}</td>
-                    <td>{item.FileUpload ? <a href={item.FileUpload} target="_blank" rel="noopener noreferrer">View</a> : '-'}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="text-center">No data found</td>
+      <div className="table-responsive mt-4">
+        <Table bordered hover className="text-center customTable">
+          <thead className="table-primary">
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Part Name</th>
+               <th>Drawing No.</th>
+              <th>Raw Material</th>
+              <th>Raw Material Size</th>
+              <th>Industry</th>
+              <th>File Upload</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              renderSkeleton()
+            ) : data.length ? (
+              data.map(item => (
+                <tr key={item.Id}>
+                  <td>{item.Date ? new Date(item.Date).toLocaleDateString() : '-'}</td>
+                  <td>{item.Customer} - {item.CustomerLocation}</td>
+                  <td>{item.PartName || '-'}</td>
+                   <td>{item.RawMaterialDrawing || '-'}</td>
+                  <td>{item.RawMaterial || '-'}</td>
+                  <td>{item.RawMaterialSize || '-'}</td>
+                  <td>{item.RawMaterialCompany || '-'}</td>
+                  <td>
+                    {item.FileUpload ? (
+                      <a
+                        href={item.FileUpload}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-primary px-3 py-1 rounded-pill"
+                      >
+                        View File
+                      </a>
+                    ) : '-'}
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </Table>
-        )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">No data found</td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Pagination className="justify-content-center mt-3">
-          <Pagination.Prev disabled={activePage === 1} onClick={() => setActivePage(prev => prev - 1)} />
+        <Pagination className="justify-content-center mt-3 mb-5">
+          <Pagination.Prev
+            disabled={activePage === 1}
+            onClick={() => setActivePage(prev => prev - 1)}
+          />
           {[...Array(totalPages)].map((_, idx) => (
-            <Pagination.Item key={idx + 1} active={activePage === idx + 1} onClick={() => setActivePage(idx + 1)}>
+            <Pagination.Item
+              key={idx + 1}
+              active={activePage === idx + 1}
+              onClick={() => setActivePage(idx + 1)}
+            >
               {idx + 1}
             </Pagination.Item>
           ))}
-          <Pagination.Next disabled={activePage === totalPages} onClick={() => setActivePage(prev => prev + 1)} />
+          <Pagination.Next
+            disabled={activePage === totalPages}
+            onClick={() => setActivePage(prev => prev + 1)}
+          />
         </Pagination>
       )}
-      </>
+    </>
   );
 }

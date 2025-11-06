@@ -3,7 +3,10 @@ import PreDayworkAllotment from '@/components/PreDayworkAllotmentAdmin/PreDaywor
 
 const page = () => {
   return (
-<PreDayworkAllotment/>
+     <div className="container-fluid form-complete-bg p-4">
+      <PreDayworkAllotment/>
+     </div>
+
   )
 }
 

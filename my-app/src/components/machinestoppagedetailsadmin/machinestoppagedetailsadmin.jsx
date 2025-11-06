@@ -1,90 +1,153 @@
 'use client'
-import { useState } from 'react';
-import { Table, Form, Dropdown, DropdownButton, Pagination, Row, Col } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Table, Form, Row, Col, Placeholder, Button, Pagination } from 'react-bootstrap';
+import axios from 'axios';
+import { IoMdCloseCircleOutline } from 'react-icons/io';
 
-const Machinestoppagedetails = () => {
+export default function MachineStoppageDetails() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [dateFilter, setDateFilter] = useState('');
   const [activePage, setActivePage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10; // rows per page
 
-  const pages = [1, 2, 3];
+  const fetchData = async (page = 1) => {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/machine-stoppage', {
+        params: {
+          date: dateFilter || undefined,
+          page,
+          limit
+        }
+      });
+      if (res.data.success) {
+        setData(res.data.data || []);
+        setTotalPages(res.data.pages || 1);
+        setActivePage(page);
+      }
+    } catch (err) {
+      console.error(err);
+      setData([]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData(1); // reset to first page when filters change
+  }, [dateFilter]);
+
+  const renderSkeleton = () =>
+    Array.from({ length: limit }).map((_, idx) => (
+      <tr key={idx}>
+        {Array.from({ length: 8 }).map((_, j) => (
+          <td key={j}>
+            <Placeholder as="span" animation="glow" className="light-placeholder">
+              <Placeholder xs={8} />
+            </Placeholder>
+          </td>
+        ))}
+      </tr>
+    ));
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      fetchData(page);
+    }
+  };
 
   return (
-    <div className="container-fluid mt-4">
-
-      {/* Filters */}
+    <>
       <Row className="g-2 mb-4">
-          <Col xxl={7} xs={12}>
-               <h5 className="fw-bold mb-3">Machine Stoppage Details</h5>
-          </Col>
-        <Col xs="auto">
-          <Form.Control type="date" className='frm-table-style' />
+        <Col xxl={8} xs={12}>
+          <h5 className="fw-bold mb-3">Machine Stoppage Details</h5>
         </Col>
+
         <Col xs="auto">
-          <DropdownButton variant="outline-secondary" title="Part Name" className="w-100">
-            <Dropdown.Item>Part A</Dropdown.Item>
-            <Dropdown.Item>Part B</Dropdown.Item>
-          </DropdownButton>
+          <Form.Control
+            type="date"
+            className="date-filed-admin"
+            value={dateFilter}
+            onChange={e => setDateFilter(e.target.value)}
+          />
         </Col>
+
         <Col xs="auto">
-          <DropdownButton variant="outline-secondary" title="Accepted/Rejected" className="w-100">
-            <Dropdown.Item>Accepted</Dropdown.Item>
-            <Dropdown.Item>Rejected</Dropdown.Item>
-          </DropdownButton>
-        </Col>
-        <Col xs="auto">
-          <DropdownButton variant="outline-secondary" title="Deleted" className="w-100">
-            <Dropdown.Item>Yes</Dropdown.Item>
-            <Dropdown.Item>No</Dropdown.Item>
-          </DropdownButton>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setDateFilter('');
+              fetchData(1);
+            }}
+          >
+            Clear <IoMdCloseCircleOutline />
+          </Button>
         </Col>
       </Row>
-<hr className='mb-3 hr-sty-all'/>
-      {/* Table */}
+
+      <hr className="mb-3 hr-sty-all" />
+
       <div className="table-responsive mt-4">
-        <Table bordered hover className='customTable'>
+        <Table bordered hover className="customTable text-center">
           <thead>
             <tr>
               <th>Date</th>
-              <th>Part</th>
-              <th>No of M/C Allotted</th>
-              <th>Running Machines</th>
-              <th> Machines Not Running</th>
+              <th>Machines Allotted</th>
+              <th>Running</th>
+              <th>Not Running</th>
               <th>Under Setting</th>
               <th>Maintenance</th>
-              
+              <th>Remarks</th>
+              <th>New Process</th>
             </tr>
           </thead>
           <tbody>
-            {[...Array(10)].map((_, idx) => (
-              <tr key={idx} style={{height:'40px'}}>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                
+            {loading ? (
+              renderSkeleton()
+            ) : data.length ? (
+              data.map((row, idx) => (
+                <tr key={idx}>
+                  <td>{new Date(row.Date).toLocaleDateString()}</td>
+                  <td>{row.MachinesAllotted}</td>
+                  <td>{row.Running}</td>
+                  <td>{row.NotRunning}</td>
+                  <td>{row.UnderSetting}</td>
+                  <td>{row.Maintenance}</td>
+                  <td>{row.Remarks}</td>
+                  <td>{row.NewProcess}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={8} className="text-center">
+                  No records found
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </Table>
       </div>
 
-      {/* Pagination */}
-      <Pagination className="justify-content-center">
-        <Pagination.Prev disabled={activePage === 1} />
-        {pages.map((p) => (
+      <Pagination className="justify-content-center mt-3 mb-5">
+        <Pagination.Prev
+          onClick={() => handlePageChange(activePage - 1)}
+          disabled={activePage === 1}
+        />
+        {Array.from({ length: totalPages }, (_, i) => (
           <Pagination.Item
-            key={p}
-            active={p === activePage}
-            onClick={() => setActivePage(p)}
+            key={i + 1}
+            active={i + 1 === activePage}
+            onClick={() => handlePageChange(i + 1)}
           >
-            {p}
+            {i + 1}
           </Pagination.Item>
         ))}
-        <Pagination.Next disabled={activePage === pages.length} />
+        <Pagination.Next
+          onClick={() => handlePageChange(activePage + 1)}
+          disabled={activePage === totalPages}
+        />
       </Pagination>
-    </div>
+    </>
   );
 }
-export default Machinestoppagedetails

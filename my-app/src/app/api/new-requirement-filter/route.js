@@ -1,4 +1,4 @@
-// /api/new-requirement-filters.js
+// /api/new-requirement-filter.js
 import { getConnection } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
@@ -20,11 +20,9 @@ export async function GET() {
         industries: industries.map(i => i.RawMaterialCompany),
       }
     });
+
   } catch (err) {
     console.error('Filter GET error:', err);
-    return NextResponse.json(
-      { success: false, message: 'Server error', error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }

@@ -3,7 +3,10 @@ import Machinestoppagedetails from "@/components/machinestoppagedetailsadmin/mac
 
 const page = () => {
   return (
-<Machinestoppagedetails/>
+      <div className="container-fluid form-complete-bg p-4">
+        <Machinestoppagedetails/>
+      </div>
+
   )
 }
 

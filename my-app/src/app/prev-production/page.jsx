@@ -10,7 +10,11 @@ const PrevProductionPage = () => {
       return () => clearTimeout(timer);
     }, []);
   return (
-    <>  {loading ? <CommonSkeletonLoader /> : <PrevDayProductionForm />}</>
+    <>  
+      <div className="container-fluid form-complete-bg p-4">
+              {loading ? <CommonSkeletonLoader /> : <PrevDayProductionForm />}     
+      </div>
+   </>
 
 );
 }

@@ -10,7 +10,10 @@ const page = () => {
       return () => clearTimeout(timer);
     }, []);
   return (
-    <> {loading ? <CommonSkeletonLoader /> : <SecondaryOperationForm />}</>
+    <> 
+      <div className="container-fluid form-complete-bg p-4">
+        {loading ? <CommonSkeletonLoader /> : <SecondaryOperationForm />}
+        </div></>
   );
 };
 

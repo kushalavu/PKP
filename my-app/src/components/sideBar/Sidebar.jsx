@@ -45,7 +45,7 @@ const handleLogout = async () => {
     { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit-admin' },
     { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production-admin' },
     { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation-admin' },
-    { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
+    { label: 'Pres Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
     { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch-admin' },
     { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress-admin' },
     { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
@@ -59,7 +59,7 @@ const handleLogout = async () => {
     { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit' },
     { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production' },
     { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation' },
-    { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
+    { label: 'Pres Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
     { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch' },
     { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress' },
     { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
@@ -75,7 +75,7 @@ const handleLogout = async () => {
   return (
     <>
       <aside className="min-vh-100 d-flex flex-column">
-        <div className="d-flex flex-column align-items-center justify-content-center text-center p-3 d-lg-block d-none">
+        <div className="d-flex flex-column align-items-center justify-content-center text-center p-2  d-lg-block d-none">
           <Image
             src="/assets/logo.svg"
             alt="PKP Logo"
@@ -88,10 +88,10 @@ const handleLogout = async () => {
         <div className="custom-sidebar sidebar-overflow d-flex flex-column mt-1 d-lg-block d-none">
           <ul className="nav nav-pills flex-column init-nav-co mt-2">
             {menuItems.map((item, index) => (
-              <li key={index} className="nav-item p-2">
+              <li key={index} className="nav-item  p-xxl-2 px-xxl-2 py-1 px-2">
                 {item.action ? (
                   <button
-                    className="nav-link btn-danger nav-cus d-flex align-items-center fw-semibold gap-2 px-3 py-2 rounded text-start w-100"
+                    className="nav-link btn-danger nav-cus d-flex align-items-center fw-semibold gap-1 px-2 py-1 rounded text-start w-100"
                     onClick={item.action}
                   >
                     <span className="fs-5">{item.icon}</span>
@@ -100,7 +100,7 @@ const handleLogout = async () => {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`nav-link nav-cus d-flex align-items-center fw-semibold gap-2 px-3 py-2 rounded ${
+                    className={`nav-link nav-cus d-flex align-items-center fw-semibold gap-1 px-2 py-1 rounded ${
                       pathname === item.href ? 'hover-css-sidebar fw-semibold' : 'init-nav-co'
                     }`}
                   >

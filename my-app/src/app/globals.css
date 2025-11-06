@@ -67,7 +67,6 @@ label.clr-label {
 .form-complete-bg{
     background: #FFFFFF; 
     border-radius: 8px;
-    overflow-y: auto;
 }
 .form-bg {
     background: #FFFFFF;
@@ -120,10 +119,13 @@ label.clr-label {
     padding: 8px;
 }
 .over-with-hv {
-    height: auto;
+    height: 100%;
     overflow-y: visible;
 }
-
+.over-with-hv-1 {
+    height:20%;
+    overflow-y: visible;
+}
 @media (min-width: 992px) {
     .over-with-hv {
         height: 50vh;
@@ -138,9 +140,9 @@ label.clr-label {
     background: #F9F9F9;
     height: 100vh;
 }
-.form-bg {
+.form-bg-1 {
     background: #FFFFFF;
-    height: 100vh;
+    height: 100%;
     overflow-y: auto;
 }
 .layout-scroll{
@@ -506,6 +508,33 @@ select:focus {
 }
 .sidebar-overflow{
   height: 100vh;
-bottom: auto;
+  bottom: auto;
   overflow-y: auto;
+}
+button.btn.btn-outline-secondary {
+    --bs-btn-color: #434345!important;
+    --bs-btn-border-color: #434345 !important;
+    --bs-btn-hover-color: #434345 !important;
+    --bs-btn-focus-color: #434345!important;
+    --bs-btn-hover-bg: none !important;
+    --bs-btn-hover-border-color: #434345 !important;
+    --bs-btn-focus-shadow-rgb: #434345 !important;
+    --bs-btn-active-color: #434345!important;
+    --bs-btn-active-bg: none !important;
+    --bs-btn-active-border-color: #434345!important;
+    --bs-btn-active-shadow: #434345 !important;
+    --bs-btn-disabled-color: none !important;
+    --bs-btn-disabled-bg: none;
+    --bs-btn-disabled-border-color: none !important;
+    --bs-gradient: none;
+    font-weight: 500;
+    border-width: 1px !important;
+}
+.date-filed-admin{
+  font-weight: 500;
+  color: #434345;
+  border: 1px solid #434345;
+}
+.light-placeholder .placeholder {
+  background-color: rgb(238, 235, 235) !important; /* light gray */
 }

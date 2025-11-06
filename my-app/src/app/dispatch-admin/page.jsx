@@ -3,7 +3,10 @@ import PresentdayDispatch from "@/components/presentDaydispatchadmin/presentdayd
 
 const page = () => {
   return (
-<PresentdayDispatch/>
+     <div className="container-fluid form-complete-bg p-4">
+      <PresentdayDispatch/>
+     </div>
+
   )
 }
 

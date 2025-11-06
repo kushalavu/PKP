@@ -8,7 +8,6 @@ const SecondaryOperationForm = () => {
   const [refreshFlag, setRefreshFlag] = useState(0);
   const [formData, setFormData] = useState({
     date: '',
-    partName: '',
     coreCSKDone: '',
     coreVisualDone: '',
     magneticDrill: '',
@@ -21,13 +20,12 @@ const SecondaryOperationForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' })); // clear error on change
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
     const newErrors = {};
     if (!formData.date) newErrors.date = 'Date is required';
-    if (!formData.partName) newErrors.partName = 'Part Name is required';
     if (!formData.coreCSKDone) newErrors.coreCSKDone = 'Core CSK Done is required';
     if (!formData.coreVisualDone) newErrors.coreVisualDone = 'Core Visual Done is required';
     if (!formData.magneticDrill) newErrors.magneticDrill = 'Magnetic Drill is required';
@@ -36,161 +34,166 @@ const SecondaryOperationForm = () => {
     return newErrors;
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length) {
-    setErrors(validationErrors);
-    return;
-  }
+  // Submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
+      return;
+    }
 
-  try {
-    setLoading(true);
-    await axios.post('/api/secondary-operation', formData);
+    try {
+      setLoading(true);
+      await axios.post('/api/secondary-operation', formData);
+      toast.success('Data submitted successfully');
 
-    // Show success message
-    toast.success("Data submitted successfully");
+      setFormData({
+        date: '',
+        coreCSKDone: '',
+        coreVisualDone: '',
+        magneticDrill: '',
+        magneticVisual: '',
+        pivotPin: '',
+      });
+      setErrors({});
+      setRefreshFlag(prev => prev + 1);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to submit data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Reset form
-    setFormData({
-      date: '',
-      partName: '',
-      coreCSKDone: '',
-      coreVisualDone: '',
-      magneticDrill: '',
-      magneticVisual: '',
-      pivotPin: '',
-    });
-    setErrors({});
-    
-    // Trigger table refresh
-    setRefreshFlag(prev => prev + 1); 
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    toast.error('Failed to submit data');
-  } finally {
-    setLoading(false);
-  }
-};
-
+  const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
+const dd = String(today.getDate()).padStart(2, '0');
+const todayLocal = `${yyyy}-${mm}-${dd}`;
 
   return (
-    <div className="container-fluid form-complete-bg p-4">
+    <>
       <h5 className='fw-bold mt-2'>Secondary Operation Details</h5>
-      <p className="text-muted small init-nav-co">
+      <p className='text-muted small init-nav-co'>
         Please fill out the form to submit Secondary Operation Details
       </p>
-      <hr/>
+      <hr className='mb-4 hr-sty-all' />
+
       <form onSubmit={handleSubmit}>
-        <div className="row mb-3">
-          <div className="col-md-4">
-            <label className="form-label clr-label">Date</label>
+        <div className='row mb-3'>
+          {/* Date */}
+          <div className='col-md-4'>
+            <label className='form-label clr-label'>Date</label>
             <input
-              type="date"
-              name="date"
+              type='date'
+              name='date'
               value={formData.date}
               onChange={handleChange}
-              placeholder="Select Date"
+              max={todayLocal}
               className={`form-control frm-input-style ${errors.date ? 'is-invalid' : ''}`}
             />
-            {errors.date && <div className="invalid-feedback">{errors.date}</div>}
+            {errors.date && <div className='invalid-feedback'>{errors.date}</div>}
           </div>
-          <div className="col-md-4">
-            <label className="form-label clr-label">Part Name</label>
-            <select
-              name="partName"
-              value={formData.partName}
-              onChange={handleChange}
-              className={`form-select frm-input-style ${errors.partName ? 'is-invalid' : ''}`}
-            >
-              <option value="">Select a part</option>
-              <option value="Part A">Part A</option>
-              <option value="Part B">Part B</option>
-            </select>
-            {errors.partName && <div className="invalid-feedback">{errors.partName}</div>}
-          </div>
-          <div className="col-md-4">
-            <label className="form-label clr-label">Core CSK Done</label>
+
+          {/* Core CSK Done */}
+          <div className='col-md-4'>
+            <label className='form-label clr-label'>Core CSK Done</label>
             <input
-              type="number"
-              name="coreCSKDone"
+              type='number'
+              name='coreCSKDone'
               value={formData.coreCSKDone}
               onChange={handleChange}
-              placeholder="Enter Core CSK Done"
+              placeholder='Enter Core CSK Done'
               className={`form-control frm-input-style ${errors.coreCSKDone ? 'is-invalid' : ''}`}
             />
-            {errors.coreCSKDone && <div className="invalid-feedback">{errors.coreCSKDone}</div>}
+            {errors.coreCSKDone && (
+              <div className='invalid-feedback'>{errors.coreCSKDone}</div>
+            )}
+          </div>
+
+          {/* Core Visual Done */}
+          <div className='col-md-4'>
+            <label className='form-label clr-label'>Core Visual Done</label>
+            <input
+              type='number'
+              name='coreVisualDone'
+              value={formData.coreVisualDone}
+              onChange={handleChange}
+              placeholder='Enter Core Visual Done'
+              className={`form-control frm-input-style ${errors.coreVisualDone ? 'is-invalid' : ''}`}
+            />
+            {errors.coreVisualDone && (
+              <div className='invalid-feedback'>{errors.coreVisualDone}</div>
+            )}
+          </div>
+
+          {/* Magnetic Drill */}
+          <div className='col-md-4 mt-3'>
+            <label className='form-label clr-label'>Magnetic Drill</label>
+            <input
+              type='number'
+              name='magneticDrill'
+              value={formData.magneticDrill}
+              onChange={handleChange}
+              placeholder='Enter Magnetic Drill'
+              className={`form-control frm-input-style ${errors.magneticDrill ? 'is-invalid' : ''}`}
+            />
+            {errors.magneticDrill && (
+              <div className='invalid-feedback'>{errors.magneticDrill}</div>
+            )}
+          </div>
+
+          {/* Magnetic Visual */}
+          <div className='col-md-4 mt-3'>
+            <label className='form-label clr-label'>Magnetic Visual</label>
+            <input
+              type='number'
+              name='magneticVisual'
+              value={formData.magneticVisual}
+              onChange={handleChange}
+              placeholder='Enter Magnetic Visual'
+              className={`form-control frm-input-style ${errors.magneticVisual ? 'is-invalid' : ''}`}
+            />
+            {errors.magneticVisual && (
+              <div className='invalid-feedback'>{errors.magneticVisual}</div>
+            )}
+          </div>
+
+          {/* Pivot Pin */}
+          <div className='col-md-4 mt-3'>
+            <label className='form-label clr-label'>Pivot Pin SS PIP Done</label>
+            <input
+              type='number'
+              name='pivotPin'
+              value={formData.pivotPin}
+              onChange={handleChange}
+              placeholder='Enter Pivot Pin'
+              className={`form-control frm-input-style ${errors.pivotPin ? 'is-invalid' : ''}`}
+            />
+            {errors.pivotPin && (
+              <div className='invalid-feedback'>{errors.pivotPin}</div>
+            )}
           </div>
         </div>
 
-        <div className="row mb-3">
-          <div className="col-md-4">
-            <label className="form-label clr-label">Core Visual Done</label>
-            <input
-              type="number"
-              name="coreVisualDone"
-              value={formData.coreVisualDone}
-              onChange={handleChange}
-              placeholder="Enter Core Visual Done"
-              className={`form-control frm-input-style ${errors.coreVisualDone ? 'is-invalid' : ''}`}
-            />
-            {errors.coreVisualDone && <div className="invalid-feedback">{errors.coreVisualDone}</div>}
-          </div>
-          <div className="col-md-4">
-            <label className="form-label clr-label">Magnetic Core Drill</label>
-            <input
-              type="number"
-              name="magneticDrill"
-              value={formData.magneticDrill}
-              onChange={handleChange}
-              placeholder="Enter Magnetic Drill"
-              className={`form-control frm-input-style ${errors.magneticDrill ? 'is-invalid' : ''}`}
-            />
-            {errors.magneticDrill && <div className="invalid-feedback">{errors.magneticDrill}</div>}
-          </div>
-          <div className="col-md-4">
-            <label className="form-label clr-label">Magnetic Core Visual Done</label>
-            <input
-              type="number"
-              name="magneticVisual"
-              value={formData.magneticVisual}
-              onChange={handleChange}
-              placeholder="Enter Magnetic Visual Done"
-              className={`form-control frm-input-style ${errors.magneticVisual ? 'is-invalid' : ''}`}
-            />
-            {errors.magneticVisual && <div className="invalid-feedback">{errors.magneticVisual}</div>}
-          </div>
-          <div className="col-md-4 mt-3">
-            <label className="form-label clr-label">Pivot Pin SS PIP Done</label>
-            <input
-              type="number"
-              name="pivotPin"
-              value={formData.pivotPin}
-              onChange={handleChange}
-              placeholder="Enter Pivot Pin Done"
-              className={`form-control frm-input-style ${errors.pivotPin ? 'is-invalid' : ''}`}
-            />
-            {errors.pivotPin && <div className="invalid-feedback">{errors.pivotPin}</div>}
-          </div>
-          <div className="col-md-4 mt-4">
-            <button
-              type="submit"
-              className="btn btn-blue-clr px-4 mt-4"
-              disabled={loading}
-            >
-              {loading ? 'Saving...' : 'Submit'}
-            </button>
-            {errors.submit && <div className="text-danger mt-2">{errors.submit}</div>}
-          </div>
+        <div className='col-md-4 mt-4'>
+          <button
+            type='submit'
+            className='btn btn-blue-clr px-4 mt-3'
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : 'Submit'}
+          </button>
         </div>
       </form>
 
-      <div className="row">
-        <div className="col-sm-12">
+      <div className='row mt-4'>
+        <div className='col-sm-12'>
           <SecondaryOperationTable refreshFlag={refreshFlag} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -15,6 +15,8 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { VscError } from "react-icons/vsc";
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
+import { toast } from 'react-toastify';
+
 import Cookies from 'js-cookie';
 const Header = () => {
   const pathname = usePathname();
@@ -37,7 +39,7 @@ useEffect(() => {
 
     if (remaining <= 0) {
       clearInterval(interval);
-      alert("Your session has expired. Redirecting to login.");
+      toast.info("Your session has expired. Redirecting to login.");
       signOut({ callbackUrl: "/login" });
     }
   }, 1000);
@@ -71,7 +73,7 @@ const handleLogout = async () => {
       { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit-admin' },
       { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production-admin' },
       { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation-admin' },
-      { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
+      { label: 'Pres Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted-admin' },
       { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch-admin' },
       { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress-admin' },
       { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
@@ -85,7 +87,7 @@ const handleLogout = async () => {
       { label: 'Testing Units(OSM)', icon: <TbChecklist />, href: '/testing-unit' },
       { label: 'Prev Day Production', icon: <HiOutlineRefresh />, href: '/prev-production' },
       { label: 'Sec Operation Details', icon: <MdOutlineSettings />, href: '/sec-operation' },
-      { label: 'Pre Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
+      { label: 'Pres Day Workers Allotted', icon: <FaUserCog />, href: '/workers-allotted' },
       { label: 'Present Day Dispatch', icon: <RiTruckLine />, href: '/dispatch' },
       { label: 'Work in Progress', icon: <BsGearWideConnected />, href: '/work-in-progress' },
       { label: 'Dashboard', icon: <LuLayoutDashboard />, href: '/dashboard' },
@@ -114,7 +116,7 @@ const handleLogout = async () => {
   return (
     <>
       {/* Desktop Header */}
-      <nav className="custom-sidebar-2 text-white border-bottom p-3 d-lg-block d-none">
+      <nav className="custom-sidebar-2 text-white border-bottom p-2 d-lg-block d-none">
         <div className="container-fluid">
           <div className="row">
             <div className="col-auto">
@@ -136,7 +138,7 @@ const handleLogout = async () => {
     <span>{role === 'admin' ? 'Admin' : 'Manager'}</span>
   </Link>
   {timeLeft > 0 && (
-    <span className="ms-3" style={{ fontWeight: "bold" }}>
+    <span className="ms-3 d-none" style={{ fontWeight: "bold" }}>
       {formatTime(timeLeft)}
     </span>
   )}

@@ -3,7 +3,8 @@ import SecondaryOperationAdmin from "@/components/SecondaryOperationAdmin/Second
 
 const page = () => {
   return (
-<SecondaryOperationAdmin/>
+       <div className="container-fluid form-complete-bg p-4"><SecondaryOperationAdmin/></div>
+
   )
 }
 
